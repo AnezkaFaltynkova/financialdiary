@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "433444124135",
+    "firebase_url": "https://financial-diary-933cb.firebaseio.com",
+    "project_id": "financial-diary-933cb",
+    "storage_bucket": "financial-diary-933cb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:433444124135:android:8a695c4cf5d64758",
+        "android_client_info": {
+          "package_name": "com.faltynka.financialdiary"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "433444124135-rmb7c7lhq04bgr3lsg3eqsnp0v3l3oa7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPKGwCXVuIUNy8owaM2fzu504KmDcitgE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
