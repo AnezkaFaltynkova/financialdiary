@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Financial Diary</string>
+    <string name="button_new_account">Create New Account</string>
+    <string name="button_use_existing_account">Use Existing Account</string>
+    <string name="title_activity_create_new_account">Create New Account</string>
+    <string name="email_textView">Email:</string>
+    <string name="password_textView">Password:</string>
+    <string name="log_in">Log In</string>
+    <string name="create_account">Create Account</string>
 </resources>
