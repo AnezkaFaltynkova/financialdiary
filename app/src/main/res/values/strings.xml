@@ -7,4 +7,12 @@
     <string name="password_textView">Password:</string>
     <string name="log_in">Log In</string>
     <string name="create_account">Create Account</string>
+    <string name="minimum_password">Password too short, enter minimum 6 characters!</string>
+    <string name="auth_failed">Authentication failed.</string>
+    <string name="new_record">New Record</string>
+    <string name="new_category">New Category</string>
+    <string name="overview">Overview</string>
+    <string name="reports">Reports</string>
+    <string name="synchronize">Synchronize</string>
+    <string name="logout">Log Out</string>
 </resources>
