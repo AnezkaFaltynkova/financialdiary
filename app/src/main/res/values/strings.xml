@@ -15,4 +15,23 @@
     <string name="reports">Reports</string>
     <string name="synchronize">Synchronize</string>
     <string name="logout">Log Out</string>
+    <string name="create_new_category">Create New Category</string>
+    <string name="name_textView">Name:</string>
+    <string name="type_textView">Type:</string>
+    <string name="type_from_textView">From Type:</string>
+    <string name="type_to_textView">To Type:</string>
+    <string name="category_from_textView">From Category:</string>
+    <string name="category_to_textView">To Category:</string>
+    <string name="amount_textView">Amount:</string>
+    <string name="date_textView">Date:</string>
+    <string name="note_textView">Note:</string>
+    <string name="create_new_record">Create New Record</string>
+
+    <string-array name="type_dropdown_arrays">
+        <item>Asset</item>
+        <item>Liability</item>
+        <item>Expense</item>
+        <item>Income</item>
+        <item>Other</item>
+    </string-array>
 </resources>

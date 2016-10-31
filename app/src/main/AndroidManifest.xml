@@ -22,7 +22,9 @@
         </activity>
         <activity android:name=".CreateNewAccountActivity" />
         <activity android:name=".UseExistingAccountActivity" />
-        <activity android:name=".MenuActivity"></activity>
+        <activity android:name=".MenuActivity" />
+        <activity android:name=".NewCategory" />
+        <activity android:name=".NewRecord"></activity>
     </application>
 
 </manifest>

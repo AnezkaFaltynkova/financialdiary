@@ -1,4 +1,4 @@
-package com.faltynka.financialdiary.model;
+package com.faltynka.financialdiary.sqlite.model;
 
 public class User {
     private String email;
