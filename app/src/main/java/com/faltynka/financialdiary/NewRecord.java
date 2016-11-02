@@ -108,9 +108,10 @@ public class NewRecord extends AppCompatActivity implements View.OnClickListener
                     record.setFromId(mydb.findCategoryIdByNameAndTypeName(categoryFromString, typeFromString));
                     record.setToId(mydb.findCategoryIdByNameAndTypeName(categoryToString, typeToString));
                     record.setAmount(Integer.parseInt(amountString));
-                    record.setDate(dateString);
+                    record.setDate(getTimestampFromStringDate(dateString));
                     record.setDeleted(0);
-                    record.setEdited();
+                    Date date = new Date();
+                    record.setEdited(date.getTime());
                     record.setNote(noteEditText.getText().toString());
                     mydb.createRecord(record);
                     Toast.makeText(NewRecord.this, "New record was created date:"+ record.getDate()+" edited: " + record.getEdited(), Toast.LENGTH_LONG).show();
@@ -199,6 +200,17 @@ public class NewRecord extends AppCompatActivity implements View.OnClickListener
         public void onNothingSelected(AdapterView<?> arg) {
 
         }
+    }
+
+    public long getTimestampFromStringDate(String dateString) {
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+        Date result = null;
+        try {
+            result = df.parse(dateString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return result.getTime();
     }
 
 }

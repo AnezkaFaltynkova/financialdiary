@@ -1,12 +1,13 @@
 package com.faltynka.financialdiary.sqlite.model;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class Record {
+public class Record implements Serializable {
     private int id;
     private String firebaseId;
     private int fromId;
@@ -64,15 +65,8 @@ public class Record {
         return date;
     }
 
-    public void setDate(String dateString) {
-        DateFormat df = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
-        Date result = null;
-        try {
-            result = df.parse(dateString);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        this.date = result.getTime();
+    public void setDate(long date) {
+        this.date = date;
     }
 
     public String getNote() {
@@ -87,9 +81,8 @@ public class Record {
         return edited;
     }
 
-    public void setEdited() {
-        Date date = new Date();
-        this.edited = date.getTime();
+    public void setEdited(long edited) {
+        this.edited = edited;
     }
 
     public int getDeleted() {

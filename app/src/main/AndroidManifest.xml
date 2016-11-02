@@ -25,7 +25,8 @@
         <activity android:name=".MenuActivity" />
         <activity android:name=".NewCategory" />
         <activity android:name=".NewRecord" />
-        <activity android:name=".SelectionOverview"></activity>
+        <activity android:name=".SelectionOverview" />
+        <activity android:name=".Overview"></activity>
     </application>
 
 </manifest>

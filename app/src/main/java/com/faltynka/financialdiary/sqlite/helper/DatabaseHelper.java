@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.faltynka.financialdiary.sqlite.model.Record;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -197,9 +198,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public List<Integer> getAllDistinctYearsOfRecords() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor result = db.rawQuery("select * from record", null);
+        if (result == null) {
+            return null;
+        }
         result.moveToFirst();
         Set<Integer> years = new HashSet<>();
-        while(result.isAfterLast() == false){
+        while(!result.isAfterLast()){
             DateTime dateTime = new DateTime(result.getLong(result.getColumnIndex(KEY_DATE)));
             years.add(dateTime.getYear());
             result.moveToNext();
@@ -207,5 +211,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         List<Integer> yearsList = new ArrayList<>();
         yearsList.addAll(years);
         return yearsList;
+    }
+
+    public List<Record> getRecordsBetweenDates(int fromYear, int fromMonth, int fromDay, int toYear, int toMonth, int toDay) {
+        DateTime fromDate = new DateTime(fromYear, fromMonth, fromDay, 0, 0);
+        DateTime toDate = new DateTime(toYear, toMonth, toDay, 0, 0);
+        Long fromTimestamp = fromDate.getMillis();
+        Long toTimestamp = toDate.getMillis();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor result = db.rawQuery("select * from record where date >=" + fromTimestamp + " and date < " + toTimestamp, null);
+        if (result == null) {
+            return null;
+        }
+        result.moveToFirst();
+        List<Record> records = new ArrayList<>();
+        while(!result.isAfterLast()){
+            Record record = new Record();
+            record.setId(result.getInt(result.getColumnIndex(KEY_ID)));
+            record.setFromId(result.getInt(result.getColumnIndex(KEY_FROM_ID)));
+            record.setToId(result.getInt(result.getColumnIndex(KEY_TO_ID)));
+            record.setAmount(result.getInt(result.getColumnIndex(KEY_AMOUNT)));
+            record.setEdited(result.getLong(result.getColumnIndex(KEY_EDITED)));
+            record.setDate(result.getLong(result.getColumnIndex(KEY_DATE)));
+            record.setNote(result.getString(result.getColumnIndex(KEY_NOTE)));
+            record.setDeleted(result.getInt(result.getColumnIndex(KEY_DELETED)));
+            records.add(record);
+            result.moveToNext();
+        }
+        return records;
     }
 }
