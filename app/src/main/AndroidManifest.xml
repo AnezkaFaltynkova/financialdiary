@@ -24,7 +24,8 @@
         <activity android:name=".UseExistingAccountActivity" />
         <activity android:name=".MenuActivity" />
         <activity android:name=".NewCategory" />
-        <activity android:name=".NewRecord"></activity>
+        <activity android:name=".NewRecord" />
+        <activity android:name=".SelectionOverview"></activity>
     </application>
 
 </manifest>

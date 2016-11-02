@@ -14,6 +14,7 @@ public class MenuActivity extends AppCompatActivity {
     private Button btnLogout;
     private Button btnNewCategory;
     private Button btnNewRecord;
+    private Button btnOverview;
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener authListener;
 
@@ -27,6 +28,7 @@ public class MenuActivity extends AppCompatActivity {
         btnLogout = (Button) findViewById(R.id.logout_button);
         btnNewCategory = (Button) findViewById(R.id.new_category_button);
         btnNewRecord = (Button) findViewById(R.id.new_record_button);
+        btnOverview = (Button) findViewById(R.id.overview_button);
 
         // this listener will be called when there is change in firebase user session
         authListener = new FirebaseAuth.AuthStateListener() {
@@ -60,6 +62,13 @@ public class MenuActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MenuActivity.this, NewRecord.class));
+            }
+        });
+
+        btnOverview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MenuActivity.this, SelectionOverview.class));
             }
         });
     }

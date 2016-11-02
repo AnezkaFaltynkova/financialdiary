@@ -48,6 +48,11 @@ public class NewRecord extends AppCompatActivity implements View.OnClickListener
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        android.support.v7.app.ActionBar ab = getSupportActionBar();
+        ab.setSubtitle("New Record");
+
+
         setContentView(R.layout.activity_new_record);
 
         mydb = new DatabaseHelper(this);

@@ -8,8 +8,13 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.faltynka.financialdiary.sqlite.model.Record;
 
+import org.joda.time.DateTime;
+
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -187,5 +192,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_DELETED, record.getDeleted());
 
         db.insert(TABLE_RECORD, null, values);
+    }
+
+    public List<Integer> getAllDistinctYearsOfRecords() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor result = db.rawQuery("select * from record", null);
+        result.moveToFirst();
+        Set<Integer> years = new HashSet<>();
+        while(result.isAfterLast() == false){
+            DateTime dateTime = new DateTime(result.getLong(result.getColumnIndex(KEY_DATE)));
+            years.add(dateTime.getYear());
+            result.moveToNext();
+        }
+        List<Integer> yearsList = new ArrayList<>();
+        yearsList.addAll(years);
+        return yearsList;
     }
 }

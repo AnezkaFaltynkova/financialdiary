@@ -26,6 +26,12 @@
     <string name="date_textView">Date:</string>
     <string name="note_textView">Note:</string>
     <string name="create_new_record">Create New Record</string>
+    <string name="year_textView">Year:</string>
+    <string name="month_textView">Month:</string>
+    <string name="show">Show</string>
+    <string name="this_day">This Day</string>
+    <string name="this_month">This Month</string>
+    <string name="this_year">This Year</string>
 
     <string-array name="type_dropdown_arrays">
         <item>Asset</item>
@@ -33,5 +39,20 @@
         <item>Expense</item>
         <item>Income</item>
         <item>Other</item>
+    </string-array>
+
+    <string-array name="months_arrays">
+        <item>January</item>
+        <item>February</item>
+        <item>March</item>
+        <item>April</item>
+        <item>May</item>
+        <item>June</item>
+        <item>July</item>
+        <item>August</item>
+        <item>September</item>
+        <item>October</item>
+        <item>November</item>
+        <item>December</item>
     </string-array>
 </resources>
