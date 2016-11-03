@@ -213,9 +213,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return yearsList;
     }
 
-    public List<Record> getRecordsBetweenDates(int fromYear, int fromMonth, int fromDay, int toYear, int toMonth, int toDay) {
-        DateTime fromDate = new DateTime(fromYear, fromMonth, fromDay, 0, 0);
-        DateTime toDate = new DateTime(toYear, toMonth, toDay, 0, 0);
+    public List<Record> getRecordsBetweenDates(DateTime fromDate, DateTime toDate) {
         Long fromTimestamp = fromDate.getMillis();
         Long toTimestamp = toDate.getMillis();
         SQLiteDatabase db = this.getReadableDatabase();

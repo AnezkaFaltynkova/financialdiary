@@ -13,6 +13,8 @@ import android.widget.Spinner;
 import com.faltynka.financialdiary.sqlite.helper.DatabaseHelper;
 import com.faltynka.financialdiary.sqlite.model.Record;
 
+import org.joda.time.DateTime;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +55,10 @@ public class SelectionOverview extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(SelectionOverview.this, Overview.class);
-                List<Record> records = mydb.getRecordsBetweenDates(year, month, 1, year, month+1, 1);
+                DateTime fromDate = new DateTime(year, month , 1, 0, 0);
+                DateTime toDate = new DateTime(year, month, 1, 0, 0);
+                toDate.plusMonths(1);
+                List<Record> records = mydb.getRecordsBetweenDates(fromDate, toDate);
                 intent.putExtra("records", (Serializable) records);
                 startActivity(intent);
             }

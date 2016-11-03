@@ -32,6 +32,8 @@
     <string name="this_day">This Day</string>
     <string name="this_month">This Month</string>
     <string name="this_year">This Year</string>
+    <string name="left_arrow">(</string>
+    <string name="right_arrow">)</string>
 
     <string-array name="type_dropdown_arrays">
         <item>Asset</item>
