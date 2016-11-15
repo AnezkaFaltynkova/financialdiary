@@ -6,8 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
     tools:context="com.faltynka.financialdiary.Overview">
 
     <LinearLayout
@@ -19,11 +17,12 @@
             android:text="@string/left_arrow"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
             android:id="@+id/left_arrow_overview_button"
             android:layout_weight="1"/>
 
         <TextView
-            android:text="@string/this_year"
+            android:textSize="20sp"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:id="@+id/dateOverviewTextView"
@@ -33,8 +32,14 @@
             android:text="@string/right_arrow"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
             android:id="@+id/right_arrow_overview_button"
             android:layout_weight="1"/>
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray" />
 
 </LinearLayout>

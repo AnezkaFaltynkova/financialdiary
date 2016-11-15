@@ -25,6 +25,9 @@ public class SelectionOverview extends AppCompatActivity {
     private Spinner yearSpinner;
     private Spinner monthSpinner;
     private Button btnShow;
+    private Button btnThisDay;
+    private Button btnThisMonth;
+    private Button btnThisYear;
     private Integer year;
     private Integer month;
 
@@ -57,13 +60,76 @@ public class SelectionOverview extends AppCompatActivity {
                 Intent intent = new Intent(SelectionOverview.this, Overview.class);
                 DateTime fromDate = new DateTime(year, month , 1, 0, 0);
                 DateTime toDate = new DateTime(year, month, 1, 0, 0);
-                toDate.plusMonths(1);
+                toDate = toDate.plusMonths(1);
                 List<Record> records = mydb.getRecordsBetweenDates(fromDate, toDate);
                 intent.putExtra("records", (Serializable) records);
+                intent.putExtra("year", year);
+                intent.putExtra("month", month);
+                intent.putExtra("day", 1);
+                intent.putExtra("type", "month");
                 startActivity(intent);
             }
         });
 
+        btnThisDay = (Button) findViewById(R.id.this_day_overview_button);
+
+        btnThisDay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SelectionOverview.this, Overview.class);
+                DateTime fromDate = new DateTime();
+                fromDate = fromDate.withTimeAtStartOfDay();
+                DateTime toDate = new DateTime(fromDate.getYear(), fromDate.getMonthOfYear(), fromDate.getDayOfMonth(), 0, 0);
+                toDate = toDate.plusDays(1);
+                List<Record> records = mydb.getRecordsBetweenDates(fromDate, toDate);
+                intent.putExtra("records", (Serializable) records);
+                intent.putExtra("year", fromDate.getYear());
+                intent.putExtra("month", fromDate.getMonthOfYear());
+                intent.putExtra("day", fromDate.getDayOfMonth());
+                intent.putExtra("type", "day");
+                startActivity(intent);
+            }
+        });
+
+        btnThisMonth = (Button) findViewById(R.id.this_month_overview_button);
+
+        btnThisMonth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SelectionOverview.this, Overview.class);
+                DateTime fromDate = new DateTime();
+                fromDate = fromDate.withDayOfMonth(1).withTimeAtStartOfDay();
+                DateTime toDate = new DateTime(fromDate.getYear(), fromDate.getMonthOfYear(), fromDate.getDayOfMonth(), 0, 0);
+                toDate = toDate.plusMonths(1);
+                List<Record> records = mydb.getRecordsBetweenDates(fromDate, toDate);
+                intent.putExtra("records", (Serializable) records);
+                intent.putExtra("year", fromDate.getYear());
+                intent.putExtra("month", fromDate.getMonthOfYear());
+                intent.putExtra("day", fromDate.getDayOfMonth());
+                intent.putExtra("type", "month");
+                startActivity(intent);
+            }
+        });
+
+        btnThisYear = (Button) findViewById(R.id.this_year_overview_button);
+
+        btnThisYear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SelectionOverview.this, Overview.class);
+                DateTime fromDate = new DateTime();
+                fromDate = fromDate.withMonthOfYear(1).withDayOfMonth(1).withTimeAtStartOfDay();
+                DateTime toDate = new DateTime(fromDate.getYear(), fromDate.getMonthOfYear(), fromDate.getDayOfMonth(), 0, 0);
+                toDate = toDate.plusYears(1);
+                List<Record> records = mydb.getRecordsBetweenDates(fromDate, toDate);
+                intent.putExtra("records", (Serializable) records);
+                intent.putExtra("year", fromDate.getYear());
+                intent.putExtra("month", fromDate.getMonthOfYear());
+                intent.putExtra("day", fromDate.getDayOfMonth());
+                intent.putExtra("type", "year");
+                startActivity(intent);
+            }
+        });
     }
 
     public class ItemSelectedYearListener implements AdapterView.OnItemSelectedListener {
