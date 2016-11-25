@@ -60,7 +60,15 @@ public class SelectionReportsActivity extends AppCompatActivity {
                 DateTime toDate = new DateTime(year, month, 1, 0, 0);
                 toDate = toDate.plusMonths(1);
                 List<SumInCategory> income = mydb.countSumInIncomeCategoriesFromDateRange(fromDate, toDate);
+                List<SumInCategory> expense = mydb.countSumInExpenseCategoriesFromDateRange(fromDate, toDate);
+                List<SumInCategory> asset = mydb.countSumInCategoriesOfTypeFromDateRange("Asset", fromDate, toDate);
+                List<SumInCategory> liability = mydb.countSumInCategoriesOfTypeFromDateRange("Liability", fromDate, toDate);
+                List<SumInCategory> other = mydb.countSumInCategoriesOfTypeFromDateRange("Other", fromDate, toDate);
                 intent.putExtra("income", (Serializable) income);
+                intent.putExtra("expense", (Serializable) expense);
+                intent.putExtra("asset", (Serializable) asset);
+                intent.putExtra("liability", (Serializable) liability);
+                intent.putExtra("other", (Serializable) other);
                 intent.putExtra("year", year);
                 intent.putExtra("month", month);
                 intent.putExtra("type", "month");
@@ -73,18 +81,26 @@ public class SelectionReportsActivity extends AppCompatActivity {
         btnThisMonth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent = new Intent(SelectionReportsActivity.this, Overview.class);
-//                DateTime fromDate = new DateTime();
-//                fromDate = fromDate.withTimeAtStartOfDay();
-//                DateTime toDate = new DateTime(fromDate.getYear(), fromDate.getMonthOfYear(), fromDate.getDayOfMonth(), 0, 0);
-//                toDate = toDate.plusDays(1);
-//                List<Record> records = mydb.getRecordsBetweenDates(fromDate, toDate);
-//                intent.putExtra("records", (Serializable) records);
-//                intent.putExtra("year", fromDate.getYear());
-//                intent.putExtra("month", fromDate.getMonthOfYear());
-//                intent.putExtra("day", fromDate.getDayOfMonth());
-//                intent.putExtra("type", "day");
-//                startActivity(intent);
+                Intent intent = new Intent(SelectionReportsActivity.this, ReportsActivity.class);
+                DateTime fromDate = new DateTime();
+                fromDate = fromDate.withDayOfMonth(1).withTimeAtStartOfDay();
+                DateTime toDate = new DateTime(fromDate.getYear(), fromDate.getMonthOfYear(), fromDate.getDayOfMonth(), 0, 0);
+                toDate = toDate.plusMonths(1);
+                List<SumInCategory> income = mydb.countSumInIncomeCategoriesFromDateRange(fromDate, toDate);
+                List<SumInCategory> expense = mydb.countSumInExpenseCategoriesFromDateRange(fromDate, toDate);
+                List<SumInCategory> asset = mydb.countSumInCategoriesOfTypeFromDateRange("Asset", fromDate, toDate);
+                List<SumInCategory> liability = mydb.countSumInCategoriesOfTypeFromDateRange("Liability", fromDate, toDate);
+                List<SumInCategory> other = mydb.countSumInCategoriesOfTypeFromDateRange("Other", fromDate, toDate);
+                intent.putExtra("income", (Serializable) income);
+                intent.putExtra("expense", (Serializable) expense);
+                intent.putExtra("asset", (Serializable) asset);
+                intent.putExtra("liability", (Serializable) liability);
+                intent.putExtra("other", (Serializable) other);
+                intent.putExtra("year", fromDate.getYear());
+                intent.putExtra("month", fromDate.getMonthOfYear());
+                intent.putExtra("day", fromDate.getDayOfMonth());
+                intent.putExtra("type", "month");
+                startActivity(intent);
             }
         });
 
@@ -93,18 +109,26 @@ public class SelectionReportsActivity extends AppCompatActivity {
         btnThisYear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent = new Intent(SelectionReportsActivity.this, Overview.class);
-//                DateTime fromDate = new DateTime();
-//                fromDate = fromDate.withDayOfMonth(1).withTimeAtStartOfDay();
-//                DateTime toDate = new DateTime(fromDate.getYear(), fromDate.getMonthOfYear(), fromDate.getDayOfMonth(), 0, 0);
-//                toDate = toDate.plusMonths(1);
-//                List<Record> records = mydb.getRecordsBetweenDates(fromDate, toDate);
-//                intent.putExtra("records", (Serializable) records);
-//                intent.putExtra("year", fromDate.getYear());
-//                intent.putExtra("month", fromDate.getMonthOfYear());
-//                intent.putExtra("day", fromDate.getDayOfMonth());
-//                intent.putExtra("type", "month");
-//                startActivity(intent);
+                Intent intent = new Intent(SelectionReportsActivity.this, ReportsActivity.class);
+                DateTime fromDate = new DateTime();
+                fromDate = fromDate.withMonthOfYear(1).withDayOfMonth(1).withTimeAtStartOfDay();
+                DateTime toDate = new DateTime(fromDate.getYear(), fromDate.getMonthOfYear(), fromDate.getDayOfMonth(), 0, 0);
+                toDate = toDate.plusYears(1);
+                List<SumInCategory> income = mydb.countSumInIncomeCategoriesFromDateRange(fromDate, toDate);
+                List<SumInCategory> expense = mydb.countSumInExpenseCategoriesFromDateRange(fromDate, toDate);
+                List<SumInCategory> asset = mydb.countSumInCategoriesOfTypeFromDateRange("Asset", fromDate, toDate);
+                List<SumInCategory> liability = mydb.countSumInCategoriesOfTypeFromDateRange("Liability", fromDate, toDate);
+                List<SumInCategory> other = mydb.countSumInCategoriesOfTypeFromDateRange("Other", fromDate, toDate);
+                intent.putExtra("income", (Serializable) income);
+                intent.putExtra("expense", (Serializable) expense);
+                intent.putExtra("asset", (Serializable) asset);
+                intent.putExtra("liability", (Serializable) liability);
+                intent.putExtra("other", (Serializable) other);
+                intent.putExtra("year", fromDate.getYear());
+                intent.putExtra("month", fromDate.getMonthOfYear());
+                intent.putExtra("day", fromDate.getDayOfMonth());
+                intent.putExtra("type", "year");
+                startActivity(intent);
             }
         });
 

@@ -285,10 +285,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Long fromTimestamp = fromDate.getMillis();
         Long toTimestamp = toDate.getMillis();
         SQLiteDatabase db = this.getReadableDatabase();
-        int assetId = findTypeIdByName("Income");
-        List<Integer> allAssetCategories = getAllCategoriesIdForType(assetId);
+        int incomeId = findTypeIdByName("Income");
+        List<Integer> allIncomeCategories = getAllCategoriesIdForType(incomeId);
         List<SumInCategory> sumsInCategories = new ArrayList<>();
-        for(Integer categoryId : allAssetCategories) {
+        for(Integer categoryId : allIncomeCategories) {
             String categoryName = findCategoryNameById(categoryId);
             int sum = 0;
             Cursor result = db.rawQuery("select * from record where from_id =" + categoryId + " and date >=" + fromTimestamp + " and date < " + toTimestamp + " and deleted = 0", null);
@@ -303,6 +303,78 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             while(!result.isAfterLast()){
                 sum = sum + result.getInt(result.getColumnIndex(KEY_AMOUNT));
                 result.moveToNext();
+            }
+            SumInCategory sumInCategory = new SumInCategory();
+            sumInCategory.setCategory(categoryName);
+            sumInCategory.setSum(sum);
+            sumsInCategories.add(sumInCategory);
+        }
+        return sumsInCategories;
+    }
+
+    public List<SumInCategory> countSumInExpenseCategoriesFromDateRange(DateTime fromDate, DateTime toDate) {
+        Long fromTimestamp = fromDate.getMillis();
+        Long toTimestamp = toDate.getMillis();
+        SQLiteDatabase db = this.getReadableDatabase();
+        int expenseId = findTypeIdByName("Expense");
+        List<Integer> allExpenseCategories = getAllCategoriesIdForType(expenseId);
+        List<SumInCategory> sumsInCategories = new ArrayList<>();
+        for(Integer categoryId : allExpenseCategories) {
+            String categoryName = findCategoryNameById(categoryId);
+            int sum = 0;
+            Cursor result = db.rawQuery("select * from record where to_id =" + categoryId + " and date >=" + fromTimestamp + " and date < " + toTimestamp + " and deleted = 0", null);
+            if (result == null) {
+                SumInCategory sumInCategory = new SumInCategory();
+                sumInCategory.setCategory(categoryName);
+                sumInCategory.setSum(sum);
+                sumsInCategories.add(sumInCategory);
+                break;
+            }
+            result.moveToFirst();
+            while(!result.isAfterLast()){
+                sum = sum + result.getInt(result.getColumnIndex(KEY_AMOUNT));
+                result.moveToNext();
+            }
+            SumInCategory sumInCategory = new SumInCategory();
+            sumInCategory.setCategory(categoryName);
+            sumInCategory.setSum(sum);
+            sumsInCategories.add(sumInCategory);
+        }
+        return sumsInCategories;
+    }
+
+    public List<SumInCategory> countSumInCategoriesOfTypeFromDateRange(String typeName, DateTime fromDate, DateTime toDate) {
+        Long fromTimestamp = fromDate.getMillis();
+        Long toTimestamp = toDate.getMillis();
+        SQLiteDatabase db = this.getReadableDatabase();
+        int typeId = findTypeIdByName(typeName);
+        List<Integer> allCategoriesOfType = getAllCategoriesIdForType(typeId);
+        List<SumInCategory> sumsInCategories = new ArrayList<>();
+        for(Integer categoryId : allCategoriesOfType) {
+            String categoryName = findCategoryNameById(categoryId);
+            int sum = 0;
+            Cursor resultFrom = db.rawQuery("select * from record where from_id =" + categoryId + " and date >=" + fromTimestamp + " and date < " + toTimestamp + " and deleted = 0", null);
+            Cursor resultTo = db.rawQuery("select * from record where to_id =" + categoryId + " and date >=" + fromTimestamp + " and date < " + toTimestamp + " and deleted = 0", null);
+            if (resultFrom == null && resultTo == null) {
+                SumInCategory sumInCategory = new SumInCategory();
+                sumInCategory.setCategory(categoryName);
+                sumInCategory.setSum(sum);
+                sumsInCategories.add(sumInCategory);
+                break;
+            }
+            if (resultFrom != null) {
+                resultFrom.moveToFirst();
+                while(!resultFrom.isAfterLast()){
+                    sum = sum - resultFrom.getInt(resultFrom.getColumnIndex(KEY_AMOUNT));
+                    resultFrom.moveToNext();
+                }
+            }
+            if (resultTo != null) {
+                resultTo.moveToFirst();
+                while(!resultTo.isAfterLast()) {
+                    sum = sum + resultTo.getInt(resultTo.getColumnIndex(KEY_AMOUNT));
+                    resultTo.moveToNext();
+                }
             }
             SumInCategory sumInCategory = new SumInCategory();
             sumInCategory.setCategory(categoryName);

@@ -7,6 +7,43 @@
     android:layout_height="match_parent"
     tools:context="com.faltynka.financialdiary.ReportsActivity">
 
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:text="@string/left_arrow"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:id="@+id/left_arrow_reports_button"
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:textColor="?attr/colorAccent"/>
+
+        <TextView
+            android:textSize="20sp"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/dateReportsTextView"
+            android:layout_weight="0.5"
+            android:visibility="gone"
+            android:background="?attr/colorPrimary"
+            android:textColor="?attr/colorAccent"
+            android:gravity="center|left"/>
+
+        <Button
+            android:text="@string/right_arrow"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/right_arrow_reports_button"
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:background="?attr/colorPrimary"
+            android:textColor="?attr/colorAccent"/>
+    </LinearLayout>
+
     <android.support.design.widget.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
