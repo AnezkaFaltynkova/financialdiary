@@ -137,18 +137,19 @@ public class SelectionReportsActivity extends AppCompatActivity {
         btnEver.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent = new Intent(SelectionReportsActivity.this, Overview.class);
-//                DateTime fromDate = new DateTime();
-//                fromDate = fromDate.withMonthOfYear(1).withDayOfMonth(1).withTimeAtStartOfDay();
-//                DateTime toDate = new DateTime(fromDate.getYear(), fromDate.getMonthOfYear(), fromDate.getDayOfMonth(), 0, 0);
-//                toDate = toDate.plusYears(1);
-//                List<Record> records = mydb.getRecordsBetweenDates(fromDate, toDate);
-//                intent.putExtra("records", (Serializable) records);
-//                intent.putExtra("year", fromDate.getYear());
-//                intent.putExtra("month", fromDate.getMonthOfYear());
-//                intent.putExtra("day", fromDate.getDayOfMonth());
-//                intent.putExtra("type", "year");
-//                startActivity(intent);
+                Intent intent = new Intent(SelectionReportsActivity.this, ReportsActivity.class);
+                List<SumInCategory> income = mydb.countSumInIncomeCategoriesEver();
+                List<SumInCategory> expense = mydb.countSumInExpenseCategoriesEver();
+                List<SumInCategory> asset = mydb.countSumInCategoriesOfTypeEver("Asset");
+                List<SumInCategory> liability = mydb.countSumInCategoriesOfTypeEver("Liability");
+                List<SumInCategory> other = mydb.countSumInCategoriesOfTypeEver("Other");
+                intent.putExtra("income", (Serializable) income);
+                intent.putExtra("expense", (Serializable) expense);
+                intent.putExtra("asset", (Serializable) asset);
+                intent.putExtra("liability", (Serializable) liability);
+                intent.putExtra("other", (Serializable) other);
+                intent.putExtra("type", "ever");
+                startActivity(intent);
             }
         });
     }

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,6 +57,17 @@ public class Overview extends AppCompatActivity {
 
         LinearLayout layout = (LinearLayout) findViewById(R.id.activity_overview);
 
+        ScrollView scrollView = new ScrollView(this);
+        LinearLayout.LayoutParams scrollViewParam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        scrollView.setLayoutParams(scrollViewParam);
+        layout.addView(scrollView);
+
+        LinearLayout layoutInScrollView = new LinearLayout(this);
+        layoutInScrollView.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams layoutInScrollParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        layoutInScrollView.setLayoutParams(layoutInScrollParams);
+        scrollView.addView(layoutInScrollView);
+
         List<Record> records = (List<Record>) getIntent().getSerializableExtra("records");
         for (int i = 1; i <= records.size(); i++) {
             LinearLayout layoutWithTwoButtons = new LinearLayout(this);
@@ -63,7 +75,7 @@ public class Overview extends AppCompatActivity {
             LinearLayout.LayoutParams LLParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             layoutWithTwoButtons.setLayoutParams(LLParams);
             layoutWithTwoButtons.setPadding(50, 0, 50, 0);
-            layout.addView(layoutWithTwoButtons);
+            layoutInScrollView.addView(layoutWithTwoButtons);
 
             final Record record = records.get(i-1);
             Button btn = new Button(this);

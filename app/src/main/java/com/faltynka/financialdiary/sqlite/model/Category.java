@@ -47,4 +47,24 @@ public class Category {
     public void setFirebaseId(String firebaseId) {
         this.firebaseId = firebaseId;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        }
+        if (this == o) {
+            return true;
+        }
+        if (o instanceof Category) {
+            Category other = (Category) o;
+            return this.id == other.getId();
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
+    }
 }

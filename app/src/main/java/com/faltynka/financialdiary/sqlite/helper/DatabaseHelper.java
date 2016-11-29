@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.faltynka.financialdiary.SumInCategory;
+import com.faltynka.financialdiary.sqlite.model.Category;
 import com.faltynka.financialdiary.sqlite.model.Record;
 
 import org.joda.time.DateTime;
@@ -109,12 +110,44 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result.getInt(result.getColumnIndex(KEY_ID));
     }
 
+    public void insertUser(String email, String password){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_EMAIL, email);
+        values.put(KEY_PASSWORD, password);
+
+        db.insert(TABLE_USER, null, values);
+    }
+
+    public boolean existUser() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor result = db.rawQuery("select * from user", null);
+        int numberOfRows = result.getCount();
+        if (numberOfRows>0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public void createCategory(String name, int typeId){
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(KEY_NAME, name);
         values.put(KEY_TYPE_ID, typeId);
+
+        db.insert(TABLE_CATEGORY, null, values);
+    }
+
+    public void createCategoryWithId(Category category){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_ID, category.getId());
+        values.put(KEY_NAME, category.getName());
+        values.put(KEY_TYPE_ID, category.getType());
 
         db.insert(TABLE_CATEGORY, null, values);
     }
@@ -130,6 +163,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public List<Category> selectAllCategories(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor result = db.rawQuery("select * from category", null);
+        if (result == null) {
+            return new ArrayList<>();
+        }
+        result.moveToFirst();
+        List<Category> categories = new ArrayList<>();
+        while(!result.isAfterLast()){
+            Category category = new Category();
+            category.setId(result.getInt(result.getColumnIndex(KEY_ID)));
+            category.setFirebaseId(result.getString(result.getColumnIndex(KEY_FIREBASE_ID)));
+            category.setName(result.getString(result.getColumnIndex(KEY_NAME)));
+            category.setType(result.getInt(result.getColumnIndex(KEY_TYPE_ID)));
+            categories.add(category);
+            result.moveToNext();
+        }
+        return categories;
+    }
+
     public List<String> getTypesByPossibilityFrom(int fromPossible){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor result = db.rawQuery("select * from type where from_possible=" + fromPossible + "", null);
@@ -137,7 +190,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         result.moveToFirst();
         List<String> items = new ArrayList<>(
         );
-        while(result.isAfterLast() == false){
+        while(!result.isAfterLast()){
             items.add(result.getString(result.getColumnIndex(KEY_NAME)));
             result.moveToNext();
         }
@@ -151,7 +204,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         result.moveToFirst();
         List<String> items = new ArrayList<>(
         );
-        while(result.isAfterLast() == false){
+        while(!result.isAfterLast()){
             items.add(result.getString(result.getColumnIndex(KEY_NAME)));
             result.moveToNext();
         }
@@ -165,7 +218,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         result.moveToFirst();
         List<String> items = new ArrayList<>(
         );
-        while(result.isAfterLast() == false){
+        while(!result.isAfterLast()){
             items.add(result.getString(result.getColumnIndex(KEY_NAME)));
             result.moveToNext();
         }
@@ -185,6 +238,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
+        values.put(KEY_FROM_ID, record.getFromId());
+        values.put(KEY_TO_ID, record.getToId());
+        values.put(KEY_AMOUNT, record.getAmount());
+        values.put(KEY_DATE, record.getDate());
+        values.put(KEY_NOTE, record.getNote());
+        values.put(KEY_EDITED, record.getEdited());
+        values.put(KEY_DELETED, record.getDeleted());
+
+        db.insert(TABLE_RECORD, null, values);
+    }
+
+    public void createRecordWithId(Record record){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_ID, record.getId());
         values.put(KEY_FROM_ID, record.getFromId());
         values.put(KEY_TO_ID, record.getToId());
         values.put(KEY_AMOUNT, record.getAmount());
@@ -227,6 +296,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         List<Integer> yearsList = new ArrayList<>();
         yearsList.addAll(years);
         return yearsList;
+    }
+
+    public List<Record> selectAllRecords() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor result = db.rawQuery("select * from record", null);
+        if (result == null) {
+            return new ArrayList<>();
+        }
+        result.moveToFirst();
+        List<Record> records = new ArrayList<>();
+        while(!result.isAfterLast()){
+            Record record = new Record();
+            record.setId(result.getInt(result.getColumnIndex(KEY_ID)));
+            record.setFromId(result.getInt(result.getColumnIndex(KEY_FROM_ID)));
+            record.setToId(result.getInt(result.getColumnIndex(KEY_TO_ID)));
+            record.setAmount(result.getInt(result.getColumnIndex(KEY_AMOUNT)));
+            record.setEdited(result.getLong(result.getColumnIndex(KEY_EDITED)));
+            record.setDate(result.getLong(result.getColumnIndex(KEY_DATE)));
+            record.setNote(result.getString(result.getColumnIndex(KEY_NOTE)));
+            record.setDeleted(result.getInt(result.getColumnIndex(KEY_DELETED)));
+            records.add(record);
+            result.moveToNext();
+        }
+        return records;
     }
 
     public List<Record> getRecordsBetweenDates(DateTime fromDate, DateTime toDate) {
@@ -312,6 +405,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return sumsInCategories;
     }
 
+    public List<SumInCategory> countSumInIncomeCategoriesEver() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        int incomeId = findTypeIdByName("Income");
+        List<Integer> allIncomeCategories = getAllCategoriesIdForType(incomeId);
+        List<SumInCategory> sumsInCategories = new ArrayList<>();
+        for(Integer categoryId : allIncomeCategories) {
+            String categoryName = findCategoryNameById(categoryId);
+            int sum = 0;
+            Cursor result = db.rawQuery("select * from record where from_id =" + categoryId + " and deleted = 0", null);
+            if (result == null) {
+                SumInCategory sumInCategory = new SumInCategory();
+                sumInCategory.setCategory(categoryName);
+                sumInCategory.setSum(sum);
+                sumsInCategories.add(sumInCategory);
+                break;
+            }
+            result.moveToFirst();
+            while(!result.isAfterLast()){
+                sum = sum + result.getInt(result.getColumnIndex(KEY_AMOUNT));
+                result.moveToNext();
+            }
+            SumInCategory sumInCategory = new SumInCategory();
+            sumInCategory.setCategory(categoryName);
+            sumInCategory.setSum(sum);
+            sumsInCategories.add(sumInCategory);
+        }
+        return sumsInCategories;
+    }
+
     public List<SumInCategory> countSumInExpenseCategoriesFromDateRange(DateTime fromDate, DateTime toDate) {
         Long fromTimestamp = fromDate.getMillis();
         Long toTimestamp = toDate.getMillis();
@@ -323,6 +445,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String categoryName = findCategoryNameById(categoryId);
             int sum = 0;
             Cursor result = db.rawQuery("select * from record where to_id =" + categoryId + " and date >=" + fromTimestamp + " and date < " + toTimestamp + " and deleted = 0", null);
+            if (result == null) {
+                SumInCategory sumInCategory = new SumInCategory();
+                sumInCategory.setCategory(categoryName);
+                sumInCategory.setSum(sum);
+                sumsInCategories.add(sumInCategory);
+                break;
+            }
+            result.moveToFirst();
+            while(!result.isAfterLast()){
+                sum = sum + result.getInt(result.getColumnIndex(KEY_AMOUNT));
+                result.moveToNext();
+            }
+            SumInCategory sumInCategory = new SumInCategory();
+            sumInCategory.setCategory(categoryName);
+            sumInCategory.setSum(sum);
+            sumsInCategories.add(sumInCategory);
+        }
+        return sumsInCategories;
+    }
+
+    public List<SumInCategory> countSumInExpenseCategoriesEver() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        int expenseId = findTypeIdByName("Expense");
+        List<Integer> allExpenseCategories = getAllCategoriesIdForType(expenseId);
+        List<SumInCategory> sumsInCategories = new ArrayList<>();
+        for(Integer categoryId : allExpenseCategories) {
+            String categoryName = findCategoryNameById(categoryId);
+            int sum = 0;
+            Cursor result = db.rawQuery("select * from record where to_id =" + categoryId + " and deleted = 0", null);
             if (result == null) {
                 SumInCategory sumInCategory = new SumInCategory();
                 sumInCategory.setCategory(categoryName);
@@ -384,6 +535,45 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return sumsInCategories;
     }
 
+    public List<SumInCategory> countSumInCategoriesOfTypeEver(String typeName){
+        SQLiteDatabase db = this.getReadableDatabase();
+        int typeId = findTypeIdByName(typeName);
+        List<Integer> allCategoriesOfType = getAllCategoriesIdForType(typeId);
+        List<SumInCategory> sumsInCategories = new ArrayList<>();
+        for(Integer categoryId : allCategoriesOfType) {
+            String categoryName = findCategoryNameById(categoryId);
+            int sum = 0;
+            Cursor resultFrom = db.rawQuery("select * from record where from_id =" + categoryId + " and deleted = 0", null);
+            Cursor resultTo = db.rawQuery("select * from record where to_id =" + categoryId + " and deleted = 0", null);
+            if (resultFrom == null && resultTo == null) {
+                SumInCategory sumInCategory = new SumInCategory();
+                sumInCategory.setCategory(categoryName);
+                sumInCategory.setSum(sum);
+                sumsInCategories.add(sumInCategory);
+                break;
+            }
+            if (resultFrom != null) {
+                resultFrom.moveToFirst();
+                while(!resultFrom.isAfterLast()){
+                    sum = sum - resultFrom.getInt(resultFrom.getColumnIndex(KEY_AMOUNT));
+                    resultFrom.moveToNext();
+                }
+            }
+            if (resultTo != null) {
+                resultTo.moveToFirst();
+                while(!resultTo.isAfterLast()) {
+                    sum = sum + resultTo.getInt(resultTo.getColumnIndex(KEY_AMOUNT));
+                    resultTo.moveToNext();
+                }
+            }
+            SumInCategory sumInCategory = new SumInCategory();
+            sumInCategory.setCategory(categoryName);
+            sumInCategory.setSum(sum);
+            sumsInCategories.add(sumInCategory);
+        }
+        return sumsInCategories;
+    }
+
     public List<Integer> getAllCategoriesIdForType(int typeId){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor result = db.rawQuery("select * from category where type_id=" + typeId + "", null);
@@ -396,5 +586,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             result.moveToNext();
         }
         return items;
+    }
+
+    public void deleteData() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String sqlUser = "delete from user";
+        String sqlRecord = "delete from record";
+        String sqlCategory = "delete from category";
+        db.execSQL(sqlUser);
+        db.execSQL(sqlRecord);
+        db.execSQL(sqlCategory);
+        db.close();
     }
 }

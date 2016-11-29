@@ -5,13 +5,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+import com.faltynka.financialdiary.sqlite.helper.DatabaseHelper;
+
 public class MainActivity extends AppCompatActivity {
+    private DatabaseHelper mydb;
+    static MainActivity mainActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // if (user in database) than skip two button window
-        setContentView(R.layout.activity_main);
+        mainActivity = this;
+        mydb = new DatabaseHelper(this);
+        if (mydb.existUser()) {
+            Intent intent = new Intent(this, MenuActivity.class);
+            startActivity(intent);
+            finish();
+        } else {
+            setContentView(R.layout.activity_main);
+        }
     }
 
     public void displayCreateAccountScreen(View view) {
@@ -22,5 +33,9 @@ public class MainActivity extends AppCompatActivity {
     public void displayUseExistingAccountScreen(View view) {
         Intent intent = new Intent(this, UseExistingAccountActivity.class);
         startActivity(intent);
+    }
+
+    public static MainActivity getInstance() {
+        return mainActivity;
     }
 }

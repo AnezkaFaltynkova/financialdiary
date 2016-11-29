@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.faltynka.financialdiary.sqlite.helper.DatabaseHelper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -20,6 +21,7 @@ public class CreateNewAccountActivity extends AppCompatActivity {
     private Button btnCreateAccount;
     private EditText inputEmail;
     private EditText inputPassword;
+    private DatabaseHelper mydb;
 
 
     @Override
@@ -32,6 +34,7 @@ public class CreateNewAccountActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_new_account);
 
         auth = FirebaseAuth.getInstance();
+        mydb = new DatabaseHelper(this);
 
         btnCreateAccount = (Button) findViewById(R.id.create_account_button);
         inputEmail = (EditText) findViewById(R.id.emailNewEditText);
@@ -41,8 +44,8 @@ public class CreateNewAccountActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                String email = inputEmail.getText().toString().trim();
-                String password = inputPassword.getText().toString().trim();
+                final String email = inputEmail.getText().toString().trim();
+                final String password = inputPassword.getText().toString().trim();
 
                 if (TextUtils.isEmpty(email)) {
                     Toast.makeText(getApplicationContext(), "Enter email address!", Toast.LENGTH_SHORT).show();
@@ -72,7 +75,9 @@ public class CreateNewAccountActivity extends AppCompatActivity {
                                     Toast.makeText(CreateNewAccountActivity.this, "Authentication failed." + task.getException(),
                                             Toast.LENGTH_SHORT).show();
                                 } else {
+                                    mydb.insertUser(email, password);
                                     startActivity(new Intent(CreateNewAccountActivity.this, MenuActivity.class));
+                                    MainActivity.getInstance().finish();
                                     finish();
                                 }
                             }

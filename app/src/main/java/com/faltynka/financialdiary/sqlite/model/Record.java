@@ -92,4 +92,24 @@ public class Record implements Serializable {
     public void setDeleted(int deleted) {
         this.deleted = deleted;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        }
+        if (this == o) {
+            return true;
+        }
+        if (o instanceof Record) {
+            Record other = (Record) o;
+            return this.id == other.getId();
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
+    }
 }

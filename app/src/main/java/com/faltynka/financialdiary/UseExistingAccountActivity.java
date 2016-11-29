@@ -10,10 +10,22 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.faltynka.financialdiary.sqlite.helper.DatabaseHelper;
+import com.faltynka.financialdiary.sqlite.model.Category;
+import com.faltynka.financialdiary.sqlite.model.Record;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UseExistingAccountActivity extends AppCompatActivity {
 
@@ -21,6 +33,9 @@ public class UseExistingAccountActivity extends AppCompatActivity {
     private Button btnLogin;
     private EditText inputEmail;
     private EditText inputPassword;
+    private DatabaseHelper mydb;
+    private DatabaseReference mDatabase;
+    private String mUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +44,7 @@ public class UseExistingAccountActivity extends AppCompatActivity {
         ab.setSubtitle("Use Existing Login");
 
         auth = FirebaseAuth.getInstance();
+        mydb = new DatabaseHelper(this);
 
         if (auth.getCurrentUser() != null) {
             startActivity(new Intent(UseExistingAccountActivity.this, MenuActivity.class));
@@ -46,7 +62,7 @@ public class UseExistingAccountActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String email = inputEmail.getText().toString();
+                final String email = inputEmail.getText().toString();
                 final String password = inputPassword.getText().toString();
 
                 if (TextUtils.isEmpty(email)) {
@@ -75,8 +91,39 @@ public class UseExistingAccountActivity extends AppCompatActivity {
                                         Toast.makeText(UseExistingAccountActivity.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
                                     }
                                 } else {
+                                    mydb.insertUser(email, password);
+
+                                    FirebaseUser mFirebaseUser = auth.getCurrentUser();
+                                    mDatabase = FirebaseDatabase.getInstance().getReference();
+                                    if (mFirebaseUser == null) {
+                                        startActivity(new Intent(UseExistingAccountActivity.this, MainActivity.class));
+                                        finish();
+                                    } else {
+                                        mUserId = mFirebaseUser.getUid();
+                                        mDatabase.child("users").child(mUserId).child("category").addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot snapshot) {
+                                                List<Category> categoriesInFirebase = new ArrayList<>();
+                                                for (DataSnapshot categorySnapshot : snapshot.getChildren()) {
+                                                    Category category = categorySnapshot.getValue(Category.class);
+                                                    categoriesInFirebase.add(category);
+                                                }
+                                                for (Category firebaseCategory : categoriesInFirebase) {
+                                                    mydb.createCategoryWithId(firebaseCategory);
+                                                }
+                                                downloadRecords();
+                                            }
+
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
+
+                                            }
+                                        });
+                                    }
+
                                     Intent intent = new Intent(UseExistingAccountActivity.this, MenuActivity.class);
                                     startActivity(intent);
+                                    MainActivity.getInstance().finish();
                                     finish();
                                 }
                             }
@@ -84,5 +131,27 @@ public class UseExistingAccountActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void downloadRecords() {
+        mDatabase.child("users").child(mUserId).child("record").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                List<Record> recordsInFirebase = new ArrayList<>();
+                for (DataSnapshot recordSnapshot : snapshot.getChildren()) {
+                    Record record = recordSnapshot.getValue(Record.class);
+                    record.setFirebaseId(recordSnapshot.getKey());
+                    recordsInFirebase.add(record);
+                }
+                for (Record firebaseRecord : recordsInFirebase) {
+                    mydb.createRecordWithId(firebaseRecord);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 }
