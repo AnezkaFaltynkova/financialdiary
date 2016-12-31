@@ -55,7 +55,7 @@ public class NewRecord extends AppCompatActivity implements View.OnClickListener
 
         setContentView(R.layout.activity_new_record);
 
-        mydb = new DatabaseHelper(this);
+        mydb = DatabaseHelper.getInstance(this);
 
         dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
 

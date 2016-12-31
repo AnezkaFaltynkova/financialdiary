@@ -44,4 +44,16 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:id="@+id/loginButton" />
+
+    <Button
+        android:id="@+id/btn_reset_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dip"
+        android:background="@android:color/transparent"
+        android:text="@string/forgot_password"
+        android:textAllCaps="false"
+        android:textColor="?attr/colorAccent"
+        />
+
 </LinearLayout>

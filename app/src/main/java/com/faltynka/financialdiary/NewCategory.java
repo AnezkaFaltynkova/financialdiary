@@ -29,7 +29,7 @@ public class NewCategory extends AppCompatActivity {
 
         setContentView(R.layout.activity_new_category);
 
-        mydb = new DatabaseHelper(this);
+        mydb = DatabaseHelper.getInstance(this);
 
         btnCreate = (Button) findViewById(R.id.create_new_category_button);
         nameEditText = (EditText) findViewById(R.id.nameNewCategory);

@@ -1,7 +1,6 @@
 package com.faltynka.financialdiary;
 
 import android.content.Intent;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -42,7 +41,7 @@ public class MenuActivity extends AppCompatActivity {
         setContentView(R.layout.activity_menu);
 
         auth = FirebaseAuth.getInstance();
-        mydb = new DatabaseHelper(this);
+        mydb = DatabaseHelper.getInstance(this);
 
         btnLogout = (Button) findViewById(R.id.logout_button);
         btnNewCategory = (Button) findViewById(R.id.new_category_button);
@@ -68,8 +67,8 @@ public class MenuActivity extends AppCompatActivity {
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mydb.deleteData();
-                auth.signOut();
+                synchronizeAllData(true);
+
             }
         });
 
@@ -104,47 +103,12 @@ public class MenuActivity extends AppCompatActivity {
         btnSynchronize.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseUser mFirebaseUser = auth.getCurrentUser();
-                mDatabase = FirebaseDatabase.getInstance().getReference();
-                if (mFirebaseUser == null) {
-                    startActivity(new Intent(MenuActivity.this, MainActivity.class));
-                    finish();
-                } else {
-                    mUserId = mFirebaseUser.getUid();
-                    mDatabase.child("users").child(mUserId).child("category").addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot snapshot) {
-                            List<Category> categoriesInFirebase = new ArrayList<>();
-                            for (DataSnapshot categorySnapshot : snapshot.getChildren()) {
-                                Category category = categorySnapshot.getValue(Category.class);
-                                categoriesInFirebase.add(category);
-                            }
-                            List<Category> categoriesInSQLite = mydb.selectAllCategories();
-                            for (Category firebaseCategory : categoriesInFirebase) {
-                                if (!categoriesInSQLite.contains(firebaseCategory)) {
-                                    mydb.createCategoryWithId(firebaseCategory);
-                                }
-                            }
-                            for(Category sqliteCategory : categoriesInSQLite) {
-                                if (!categoriesInFirebase.contains(sqliteCategory)) {
-                                    mDatabase.child("users").child(mUserId).child("category").push().setValue(sqliteCategory);
-                                }
-                            }
-                            synchronizeRecords();
-                            Toast.makeText(MenuActivity.this, "Synchronized", Toast.LENGTH_LONG).show();
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
-                }
+                synchronizeAllData(false);
             }
         });
     }
 
-    private void synchronizeRecords() {
+    private void synchronizeRecords(final boolean logout) {
         mDatabase.child("users").child(mUserId).child("record").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
@@ -172,6 +136,10 @@ public class MenuActivity extends AppCompatActivity {
                         mDatabase.child("users").child(mUserId).child("record").push().setValue(sqliteRecord);
                     }
                 }
+                if (logout) {
+                    mydb.deleteData();
+                    auth.signOut();
+                }
             }
 
             @Override
@@ -179,6 +147,49 @@ public class MenuActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void synchronizeAllData(final boolean logout) {
+        FirebaseUser mFirebaseUser = auth.getCurrentUser();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        if (mFirebaseUser == null) {
+            startActivity(new Intent(MenuActivity.this, MainActivity.class));
+            finish();
+        } else {
+            mUserId = mFirebaseUser.getUid();
+            mDatabase.child("users").child(mUserId).child("category").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    List<Category> categoriesInFirebase = new ArrayList<>();
+                    for (DataSnapshot categorySnapshot : snapshot.getChildren()) {
+                        Category category = categorySnapshot.getValue(Category.class);
+                        categoriesInFirebase.add(category);
+                    }
+                    List<Category> categoriesInSQLite = mydb.selectAllCategories();
+                    for (Category firebaseCategory : categoriesInFirebase) {
+                        if (!categoriesInSQLite.contains(firebaseCategory)) {
+                            mydb.createCategoryWithId(firebaseCategory);
+                        }
+                    }
+                    for(Category sqliteCategory : categoriesInSQLite) {
+                        if (!categoriesInFirebase.contains(sqliteCategory)) {
+                            mDatabase.child("users").child(mUserId).child("category").push().setValue(sqliteCategory);
+                        }
+                    }
+                    if (logout) {
+                        synchronizeRecords(true);
+                    } else {
+                        synchronizeRecords(false);
+                    }
+                    Toast.makeText(MenuActivity.this, "Synchronized", Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
     }
 
     @Override

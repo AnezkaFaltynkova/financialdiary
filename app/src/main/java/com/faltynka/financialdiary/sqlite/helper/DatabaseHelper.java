@@ -21,6 +21,8 @@ import java.util.Set;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
+    private static DatabaseHelper sInstance;
+
     // Database Version
     public static final int DATABASE_VERSION = 1;
 
@@ -61,6 +63,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String KEY_NOTE = "note";
     public static final String KEY_EDITED = "edited";
     public static final String KEY_DELETED = "deleted";
+
+    public static synchronized DatabaseHelper getInstance(Context context) {
+        if (sInstance == null) {
+            sInstance = new DatabaseHelper(context.getApplicationContext());
+        }
+        return sInstance;
+    }
 
     public DatabaseHelper(Context context)
     {
@@ -107,7 +116,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor result =  db.rawQuery( "select * from type where name='"+name+"'", null);
         if (result != null)
             result.moveToFirst();
-        return result.getInt(result.getColumnIndex(KEY_ID));
+        int typeId = result.getInt(result.getColumnIndex(KEY_ID));
+        result.close();
+        return typeId;
     }
 
     public void insertUser(String email, String password){
@@ -118,12 +129,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_PASSWORD, password);
 
         db.insert(TABLE_USER, null, values);
+        db.close();
     }
 
     public boolean existUser() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor result = db.rawQuery("select * from user", null);
         int numberOfRows = result.getCount();
+        result.close();
         if (numberOfRows>0) {
             return true;
         } else {
@@ -139,6 +152,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_TYPE_ID, typeId);
 
         db.insert(TABLE_CATEGORY, null, values);
+        db.close();
     }
 
     public void createCategoryWithId(Category category){
@@ -150,12 +164,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_TYPE_ID, category.getType());
 
         db.insert(TABLE_CATEGORY, null, values);
+        db.close();
     }
 
     public boolean existCategory(String name, int typeId) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor result = db.rawQuery("select * from category where name = '" + name + "' and type_id =" + typeId + "", null);
         int numberOfRows = result.getCount();
+        result.close();
         if (numberOfRows>0) {
             return true;
         } else {
@@ -167,6 +183,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor result = db.rawQuery("select * from category", null);
         if (result == null) {
+            result.close();
             return new ArrayList<>();
         }
         result.moveToFirst();
@@ -180,13 +197,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             categories.add(category);
             result.moveToNext();
         }
+        result.close();
         return categories;
     }
 
     public List<String> getTypesByPossibilityFrom(int fromPossible){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor result = db.rawQuery("select * from type where from_possible=" + fromPossible + "", null);
-
         result.moveToFirst();
         List<String> items = new ArrayList<>(
         );
@@ -194,13 +211,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             items.add(result.getString(result.getColumnIndex(KEY_NAME)));
             result.moveToNext();
         }
+        result.close();
         return items;
     }
 
     public List<String> getTypesByPossibilityTo(int fromPossible){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor result = db.rawQuery("select * from type where to_possible=" + fromPossible + "", null);
-
         result.moveToFirst();
         List<String> items = new ArrayList<>(
         );
@@ -208,13 +225,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             items.add(result.getString(result.getColumnIndex(KEY_NAME)));
             result.moveToNext();
         }
+        result.close();
         return items;
     }
 
     public List<String> getCategoriesByTypeId(int typeId){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor result = db.rawQuery("select * from category where type_id=" + typeId + "", null);
-
         result.moveToFirst();
         List<String> items = new ArrayList<>(
         );
@@ -222,6 +239,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             items.add(result.getString(result.getColumnIndex(KEY_NAME)));
             result.moveToNext();
         }
+        result.close();
         return items;
     }
 
@@ -231,7 +249,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor result =  db.rawQuery( "select * from category where name='"+categoryName+"' and type_id=" + typeId + "", null);
         if (result != null)
             result.moveToFirst();
-        return result.getInt(result.getColumnIndex(KEY_ID));
+        int categoryId = result.getInt(result.getColumnIndex(KEY_ID));
+        result.close();
+        return categoryId;
     }
 
     public void createRecord(Record record){
@@ -247,6 +267,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_DELETED, record.getDeleted());
 
         db.insert(TABLE_RECORD, null, values);
+        db.close();
     }
 
     public void createRecordWithId(Record record){
@@ -263,6 +284,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_DELETED, record.getDeleted());
 
         db.insert(TABLE_RECORD, null, values);
+        db.close();
     }
 
     public void editRecord(Record record) {
@@ -278,12 +300,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_DELETED, record.getDeleted());
 
         db.update(TABLE_RECORD, values, "id=" + record.getId(), null);
+        db.close();
     }
 
     public List<Integer> getAllDistinctYearsOfRecords() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor result = db.rawQuery("select * from record", null);
         if (result == null) {
+            result.close();
             return null;
         }
         result.moveToFirst();
@@ -295,6 +319,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         List<Integer> yearsList = new ArrayList<>();
         yearsList.addAll(years);
+        result.close();
         return yearsList;
     }
 
@@ -302,6 +327,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor result = db.rawQuery("select * from record", null);
         if (result == null) {
+            result.close();
             return new ArrayList<>();
         }
         result.moveToFirst();
@@ -319,6 +345,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             records.add(record);
             result.moveToNext();
         }
+        result.close();
         return records;
     }
 
@@ -328,6 +355,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor result = db.rawQuery("select * from record where date >=" + fromTimestamp + " and date < " + toTimestamp + " and deleted = 0", null);
         if (result == null) {
+            result.close();
             return null;
         }
         result.moveToFirst();
@@ -345,6 +373,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             records.add(record);
             result.moveToNext();
         }
+        result.close();
         return records;
     }
 
@@ -353,13 +382,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor result =  db.rawQuery( "select * from category where id="+id+"", null);
         if (result != null)
             result.moveToFirst();
-        return result.getString(result.getColumnIndex(KEY_NAME));
+        String categoryName = result.getString(result.getColumnIndex(KEY_NAME));
+        result.close();
+        return categoryName;
     }
 
     public void deleteRecord(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
         String sql = "update record set deleted = 1 where id =" + id;
         db.execSQL(sql);
+        db.close();
     }
 
     public String findTypeNameForCategoryWithId(int id) {
@@ -371,7 +403,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor result2 = db.rawQuery("select * from type where id="+ typeIdOfCategory, null);
         if (result2 != null)
             result2.moveToFirst();
-        return result2.getString(result2.getColumnIndex(KEY_NAME));
+        String typeName = result2.getString(result2.getColumnIndex(KEY_NAME));
+        result.close();
+        return typeName;
     }
 
     public List<SumInCategory> countSumInIncomeCategoriesFromDateRange(DateTime fromDate, DateTime toDate) {
@@ -401,7 +435,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             sumInCategory.setCategory(categoryName);
             sumInCategory.setSum(sum);
             sumsInCategories.add(sumInCategory);
+            result.close();
         }
+
         return sumsInCategories;
     }
 
@@ -430,6 +466,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             sumInCategory.setCategory(categoryName);
             sumInCategory.setSum(sum);
             sumsInCategories.add(sumInCategory);
+            result.close();
         }
         return sumsInCategories;
     }
@@ -461,6 +498,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             sumInCategory.setCategory(categoryName);
             sumInCategory.setSum(sum);
             sumsInCategories.add(sumInCategory);
+            result.close();
         }
         return sumsInCategories;
     }
@@ -490,6 +528,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             sumInCategory.setCategory(categoryName);
             sumInCategory.setSum(sum);
             sumsInCategories.add(sumInCategory);
+            result.close();
         }
         return sumsInCategories;
     }
@@ -531,6 +570,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             sumInCategory.setCategory(categoryName);
             sumInCategory.setSum(sum);
             sumsInCategories.add(sumInCategory);
+            resultTo.close();
+            resultFrom.close();
         }
         return sumsInCategories;
     }
@@ -570,6 +611,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             sumInCategory.setCategory(categoryName);
             sumInCategory.setSum(sum);
             sumsInCategories.add(sumInCategory);
+            resultTo.close();
+            resultFrom.close();
         }
         return sumsInCategories;
     }
@@ -577,7 +620,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public List<Integer> getAllCategoriesIdForType(int typeId){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor result = db.rawQuery("select * from category where type_id=" + typeId + "", null);
-
         result.moveToFirst();
         List<Integer> items = new ArrayList<>(
         );
@@ -585,6 +627,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             items.add(result.getInt(result.getColumnIndex(KEY_ID)));
             result.moveToNext();
         }
+        result.close();
         return items;
     }
 

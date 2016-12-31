@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.faltynka.financialdiary.R;
 import com.faltynka.financialdiary.SumInCategory;
@@ -13,15 +14,6 @@ import com.faltynka.financialdiary.SumInCategory;
 import java.io.Serializable;
 import java.util.List;
 
-
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link AssetFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link AssetFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class AssetFragment extends Fragment {
     private List<SumInCategory> asset;
 
@@ -50,7 +42,7 @@ public class AssetFragment extends Fragment {
 
         asset = (List<SumInCategory>) getArguments().getSerializable("asset");
 
-        LinearLayout linearLayoutMain = (LinearLayout) view.findViewById(R.id.asset_layout);
+        RelativeLayout linearLayoutMain = (RelativeLayout) view.findViewById(R.id.asset_layout);
 
         FragmentHelper.createReportsTextViews(linearLayoutMain, asset, getContext());
         return view;

@@ -46,7 +46,7 @@ public class Overview extends AppCompatActivity {
 
         setContentView(R.layout.activity_overview);
 
-        mydb = new DatabaseHelper(this);
+        mydb = DatabaseHelper.getInstance(this);
 
         year = getIntent().getIntExtra("year", 1987);
         month = getIntent().getIntExtra("month", 9);
@@ -162,6 +162,7 @@ public class Overview extends AppCompatActivity {
         btnLeft.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 Intent intent = new Intent(Overview.this, Overview.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 DateTime fromDate = new DateTime(year, month , day, 0, 0);
                 DateTime toDate = new DateTime(year, month, day, 0, 0);
                 if (type.equals("year")){
@@ -186,6 +187,7 @@ public class Overview extends AppCompatActivity {
         btnRight.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 Intent intent = new Intent(Overview.this, Overview.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 DateTime fromDate = new DateTime(year, month , day, 0, 0);
                 DateTime toDate = new DateTime(year, month, day, 0, 0);
                 if (type.equals("year")){

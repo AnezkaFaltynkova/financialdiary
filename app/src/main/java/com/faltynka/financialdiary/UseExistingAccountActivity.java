@@ -31,6 +31,7 @@ public class UseExistingAccountActivity extends AppCompatActivity {
 
     private FirebaseAuth auth;
     private Button btnLogin;
+    private Button btnForgotPassword;
     private EditText inputEmail;
     private EditText inputPassword;
     private DatabaseHelper mydb;
@@ -44,7 +45,7 @@ public class UseExistingAccountActivity extends AppCompatActivity {
         ab.setSubtitle("Use Existing Login");
 
         auth = FirebaseAuth.getInstance();
-        mydb = new DatabaseHelper(this);
+        mydb = DatabaseHelper.getInstance(this);
 
         if (auth.getCurrentUser() != null) {
             startActivity(new Intent(UseExistingAccountActivity.this, MenuActivity.class));
@@ -56,6 +57,7 @@ public class UseExistingAccountActivity extends AppCompatActivity {
         inputEmail = (EditText) findViewById(R.id.emailExistingEditText);
         inputPassword = (EditText) findViewById(R.id.passwordExistingEditText);
         btnLogin = (Button) findViewById(R.id.loginButton);
+        btnForgotPassword = (Button) findViewById(R.id.btn_reset_password);
 
         auth = FirebaseAuth.getInstance();
 
@@ -128,6 +130,13 @@ public class UseExistingAccountActivity extends AppCompatActivity {
                                 }
                             }
                         });
+            }
+        });
+
+        btnForgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(UseExistingAccountActivity.this, ForgotPasswordActivity.class));
             }
         });
 

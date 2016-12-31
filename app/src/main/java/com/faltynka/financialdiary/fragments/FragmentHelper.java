@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Color;
 import android.view.Gravity;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.faltynka.financialdiary.SumInCategory;
@@ -12,14 +14,27 @@ import java.util.List;
 
 public class FragmentHelper {
 
-    public static void createReportsTextViews(LinearLayout linearLayoutMain, List<SumInCategory> sumInCategoryList, Context context) {
+    public static void createReportsTextViews(RelativeLayout linearLayoutMain, List<SumInCategory> sumInCategoryList, Context context) {
+        ScrollView scrollView = new ScrollView(context);
+        RelativeLayout.LayoutParams scrollViewParam = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        scrollViewParam.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        scrollView.setLayoutParams(scrollViewParam);
+        scrollView.setPadding(0, 0, 0, 100);
+        linearLayoutMain.addView(scrollView);
+
+        LinearLayout layoutInScrollView = new LinearLayout(context);
+        layoutInScrollView.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams layoutInScrollParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        layoutInScrollView.setLayoutParams(layoutInScrollParams);
+        scrollView.addView(layoutInScrollView);
+
         for(SumInCategory sumInCategory : sumInCategoryList){
             LinearLayout layoutWithTwoTextViews = new LinearLayout(context);
             layoutWithTwoTextViews.setOrientation(LinearLayout.HORIZONTAL);
             LinearLayout.LayoutParams LLParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             layoutWithTwoTextViews.setLayoutParams(LLParams);
             layoutWithTwoTextViews.setPadding(50, 0, 50, 0);
-            linearLayoutMain.addView(layoutWithTwoTextViews);
+            layoutInScrollView.addView(layoutWithTwoTextViews);
 
             TextView textViewCategory = new TextView(context);
             textViewCategory.setText(sumInCategory.getCategory());
@@ -41,10 +56,10 @@ public class FragmentHelper {
 
         LinearLayout layoutWithTogether = new LinearLayout(context);
         layoutWithTogether.setOrientation(LinearLayout.HORIZONTAL);
-        LinearLayout.LayoutParams LLParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1);
+        RelativeLayout.LayoutParams LLParams = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        LLParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         layoutWithTogether.setLayoutParams(LLParams);
         layoutWithTogether.setPadding(50, 0, 50, 0);
-        layoutWithTogether.setGravity(Gravity.BOTTOM);
         linearLayoutMain.addView(layoutWithTogether);
 
         TextView textViewTogetherLeft = new TextView(context);

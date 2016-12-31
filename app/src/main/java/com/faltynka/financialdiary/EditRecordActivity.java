@@ -62,7 +62,7 @@ public class EditRecordActivity extends AppCompatActivity implements View.OnClic
         day = getIntent().getIntExtra("day", 25);
         type = getIntent().getStringExtra("type");
 
-        mydb = new DatabaseHelper(this);
+        mydb = DatabaseHelper.getInstance(this);
 
         dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
 

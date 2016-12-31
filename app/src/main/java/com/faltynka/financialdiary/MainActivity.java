@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mainActivity = this;
-        mydb = new DatabaseHelper(this);
+        mydb = DatabaseHelper.getInstance(this);
         if (mydb.existUser()) {
             Intent intent = new Intent(this, MenuActivity.class);
             startActivity(intent);

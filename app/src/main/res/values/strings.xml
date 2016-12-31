@@ -36,6 +36,14 @@
     <string name="right_arrow">&gt;</string>
     <string name="edit_record">Edit Record</string>
     <string name="ever">Ever</string>
+    <string name="forgot_password"><u>Forgot password?</u></string>
+    <string name="lbl_forgot_password">Forgot password?</string>
+    <string name="forgot_password_msg">We just need your registered email address to sent you password reset instructions.</string>
+    <string name="btn_reset_password">Reset Password</string>
+    <string name="asset">Asset</string>
+    <string name="expense">Expense</string>
+    <string name="income">Income</string>
+
 
     <string-array name="type_dropdown_arrays">
         <item>Asset</item>

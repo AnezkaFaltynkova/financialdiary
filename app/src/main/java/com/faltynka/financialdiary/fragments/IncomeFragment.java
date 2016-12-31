@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.faltynka.financialdiary.R;
@@ -47,7 +48,7 @@ public class IncomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_income, container, false);
         income = (List<SumInCategory>) getArguments().getSerializable("income");
 
-        LinearLayout linearLayoutMain = (LinearLayout) view.findViewById(R.id.income_layout);
+        RelativeLayout linearLayoutMain = (RelativeLayout) view.findViewById(R.id.income_layout);
 
         FragmentHelper.createReportsTextViews(linearLayoutMain, income, getContext());
 

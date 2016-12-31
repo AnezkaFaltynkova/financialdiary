@@ -39,7 +39,7 @@ public class ReportsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reports);
 
-        mydb = new DatabaseHelper(this);
+        mydb = DatabaseHelper.getInstance(this);
 
         year = getIntent().getIntExtra("year", 1987);
         month = getIntent().getIntExtra("month", 9);

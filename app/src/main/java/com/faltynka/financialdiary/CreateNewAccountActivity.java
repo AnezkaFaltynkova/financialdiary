@@ -34,7 +34,7 @@ public class CreateNewAccountActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_new_account);
 
         auth = FirebaseAuth.getInstance();
-        mydb = new DatabaseHelper(this);
+        mydb = DatabaseHelper.getInstance(this);
 
         btnCreateAccount = (Button) findViewById(R.id.create_account_button);
         inputEmail = (EditText) findViewById(R.id.emailNewEditText);
@@ -67,18 +67,19 @@ public class CreateNewAccountActivity extends AppCompatActivity {
                         .addOnCompleteListener(CreateNewAccountActivity.this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
-                                Toast.makeText(CreateNewAccountActivity.this, "createUserWithEmail:onComplete:" + task.isSuccessful(), Toast.LENGTH_SHORT).show();
-                                // If sign in fails, display a message to the user. If sign in succeeds
-                                // the auth state listener will be notified and logic to handle the
-                                // signed in user can be handled in the listener.
-                                if (!task.isSuccessful()) {
-                                    Toast.makeText(CreateNewAccountActivity.this, "Authentication failed." + task.getException(),
-                                            Toast.LENGTH_SHORT).show();
-                                } else {
+                                if (task.isSuccessful()) {
                                     mydb.insertUser(email, password);
+                                    Toast.makeText(CreateNewAccountActivity.this, "Your account was created.", Toast.LENGTH_SHORT).show();
                                     startActivity(new Intent(CreateNewAccountActivity.this, MenuActivity.class));
                                     MainActivity.getInstance().finish();
                                     finish();
+                                } else {
+                                    if(task.getException().getMessage().equals("The email address is already in use by another account.")) {
+                                        Toast.makeText(CreateNewAccountActivity.this, "The email address is already in use by another account.", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(CreateNewAccountActivity.this, "Authentication failed." + task.getException(),
+                                                Toast.LENGTH_SHORT).show();
+                                    }
                                 }
                             }
                         });

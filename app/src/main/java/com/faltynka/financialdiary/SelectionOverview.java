@@ -40,7 +40,7 @@ public class SelectionOverview extends AppCompatActivity {
 
         setContentView(R.layout.activity_selection_overview);
 
-        mydb = new DatabaseHelper(this);
+        mydb = DatabaseHelper.getInstance(this);
 
         yearSpinner = (Spinner) findViewById(R.id.year_overview_spinner);
         yearSpinner.setOnItemSelectedListener(new SelectionOverview.ItemSelectedYearListener());

@@ -38,7 +38,7 @@ public class SelectionReportsActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_selection_reports);
 
-        mydb = new DatabaseHelper(this);
+        mydb = DatabaseHelper.getInstance(this);
 
         yearSpinner = (Spinner) findViewById(R.id.year_reports_spinner);
         yearSpinner.setOnItemSelectedListener(new SelectionReportsActivity.ItemSelectedYearListener());

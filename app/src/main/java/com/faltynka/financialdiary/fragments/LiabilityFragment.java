@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.faltynka.financialdiary.R;
 import com.faltynka.financialdiary.SumInCategory;
@@ -42,7 +43,7 @@ public class LiabilityFragment extends Fragment {
 
         liability = (List<SumInCategory>) getArguments().getSerializable("liability");
 
-        LinearLayout linearLayoutMain = (LinearLayout) view.findViewById(R.id.liability_layout);
+        RelativeLayout linearLayoutMain = (RelativeLayout) view.findViewById(R.id.liability_layout);
 
         FragmentHelper.createReportsTextViews(linearLayoutMain, liability, getContext());
         return view;
