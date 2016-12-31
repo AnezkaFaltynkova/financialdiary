@@ -95,9 +95,9 @@ public class NewRecord extends AppCompatActivity implements View.OnClickListener
             public void onClick(View v) {
                 String amountString = amountEditText.getText().toString();
                 String dateString = dateEditText.getText().toString();
-                if (categoryFromString.isEmpty()){
+                if (categoryFromString == null){
                     Toast.makeText(NewRecord.this, "Choose From Category", Toast.LENGTH_LONG).show();
-                } else if (categoryToString.isEmpty()){
+                } else if (categoryToString == null){
                     Toast.makeText(NewRecord.this, "Choose To Category", Toast.LENGTH_LONG).show();
                 } else if (amountString.isEmpty()) {
                     Toast.makeText(NewRecord.this, "Fill the amount", Toast.LENGTH_LONG).show();
@@ -148,6 +148,7 @@ public class NewRecord extends AppCompatActivity implements View.OnClickListener
 
         public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
             typeFromString = String.valueOf(typeFromSpinner.getSelectedItem());
+            categoryFromString = null;
             int typeFromId = mydb.findTypeIdByName(typeFromString);
             List<String> fromCategoryEntries = mydb.getCategoriesByTypeId(typeFromId);
             ArrayAdapter<String> adapterFromCategory = new ArrayAdapter<String>(NewRecord.this,
@@ -165,6 +166,7 @@ public class NewRecord extends AppCompatActivity implements View.OnClickListener
 
         public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
             typeToString = String.valueOf(typeToSpinner.getSelectedItem());
+            categoryToString = null;
             int typeToId = mydb.findTypeIdByName(typeToString);
             List<String> toCategoryEntries = mydb.getCategoriesByTypeId(typeToId);
             ArrayAdapter<String> adapterToCategory = new ArrayAdapter<String>(NewRecord.this,
@@ -186,7 +188,7 @@ public class NewRecord extends AppCompatActivity implements View.OnClickListener
 
         @Override
         public void onNothingSelected(AdapterView<?> arg) {
-
+            categoryFromString = null;
         }
     }
 
@@ -198,7 +200,7 @@ public class NewRecord extends AppCompatActivity implements View.OnClickListener
 
         @Override
         public void onNothingSelected(AdapterView<?> arg) {
-
+            categoryToString = null;
         }
     }
 
