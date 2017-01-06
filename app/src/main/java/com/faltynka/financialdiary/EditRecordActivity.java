@@ -70,7 +70,7 @@ public class EditRecordActivity extends AppCompatActivity implements View.OnClic
         typeFromSpinner.setOnItemSelectedListener(new EditRecordActivity.ItemSelectedTypeFromListener());
         List<String> fromTypeEntries = mydb.getTypesByPossibilityFrom(1);
         ArrayAdapter<String> adapterFromType = new ArrayAdapter<String>(EditRecordActivity.this,
-                android.R.layout.simple_spinner_item, fromTypeEntries);
+                android.R.layout.simple_spinner_dropdown_item, fromTypeEntries);
         typeFromSpinner.setAdapter(adapterFromType);
         typeFromSpinner.setSelection(fromTypeEntries.indexOf(mydb.findTypeNameForCategoryWithId(record.getFromId())));
 
@@ -78,7 +78,7 @@ public class EditRecordActivity extends AppCompatActivity implements View.OnClic
         typeToSpinner.setOnItemSelectedListener(new EditRecordActivity.ItemSelectedTypeToListener());
         List<String> toTypeEntries = mydb.getTypesByPossibilityTo(1);
         ArrayAdapter<String> adapterToType = new ArrayAdapter<String>(EditRecordActivity.this,
-                android.R.layout.simple_spinner_item, toTypeEntries);
+                android.R.layout.simple_spinner_dropdown_item, toTypeEntries);
         typeToSpinner.setAdapter(adapterToType);
         typeToSpinner.setSelection(toTypeEntries.indexOf(mydb.findTypeNameForCategoryWithId(record.getToId())));
 
@@ -181,7 +181,7 @@ public class EditRecordActivity extends AppCompatActivity implements View.OnClic
             int typeFromId = mydb.findTypeIdByName(typeFromString);
             List<String> fromCategoryEntries = mydb.getCategoriesByTypeId(typeFromId);
             ArrayAdapter<String> adapterFromCategory = new ArrayAdapter<String>(EditRecordActivity.this,
-                    android.R.layout.simple_spinner_item, fromCategoryEntries);
+                    android.R.layout.simple_spinner_dropdown_item, fromCategoryEntries);
             categoryFromSpinner.setAdapter(adapterFromCategory);
             categoryFromSpinner.setSelection(fromCategoryEntries.indexOf(mydb.findCategoryNameById(record.getFromId())));
         }
@@ -199,7 +199,7 @@ public class EditRecordActivity extends AppCompatActivity implements View.OnClic
             int typeToId = mydb.findTypeIdByName(typeToString);
             List<String> toCategoryEntries = mydb.getCategoriesByTypeId(typeToId);
             ArrayAdapter<String> adapterToCategory = new ArrayAdapter<String>(EditRecordActivity.this,
-                    android.R.layout.simple_spinner_item, toCategoryEntries);
+                    android.R.layout.simple_spinner_dropdown_item, toCategoryEntries);
             categoryToSpinner.setAdapter(adapterToCategory);
             categoryToSpinner.setSelection(toCategoryEntries.indexOf(mydb.findCategoryNameById(record.getToId())));
         }

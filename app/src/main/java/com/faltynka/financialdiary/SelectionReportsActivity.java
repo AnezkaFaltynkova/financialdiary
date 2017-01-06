@@ -44,7 +44,7 @@ public class SelectionReportsActivity extends AppCompatActivity {
         yearSpinner.setOnItemSelectedListener(new SelectionReportsActivity.ItemSelectedYearListener());
         List<Integer> yearEntries = mydb.getAllDistinctYearsOfRecords();
         ArrayAdapter<Integer> adapterYear = new ArrayAdapter<Integer>(SelectionReportsActivity.this,
-                android.R.layout.simple_spinner_item, yearEntries);
+                android.R.layout.simple_spinner_dropdown_item, yearEntries);
         yearSpinner.setAdapter(adapterYear);
 
         monthSpinner = (Spinner) findViewById(R.id.month_reports_spinner);

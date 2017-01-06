@@ -63,14 +63,14 @@ public class NewRecord extends AppCompatActivity implements View.OnClickListener
         typeFromSpinner.setOnItemSelectedListener(new NewRecord.ItemSelectedTypeFromListener());
         List<String> fromTypeEntries = mydb.getTypesByPossibilityFrom(1);
         ArrayAdapter<String> adapterFromType = new ArrayAdapter<String>(NewRecord.this,
-                android.R.layout.simple_spinner_item, fromTypeEntries);
+                android.R.layout.simple_spinner_dropdown_item, fromTypeEntries);
         typeFromSpinner.setAdapter(adapterFromType);
 
         typeToSpinner = (Spinner) findViewById(R.id.type_to_spinner);
         typeToSpinner.setOnItemSelectedListener(new NewRecord.ItemSelectedTypeToListener());
         List<String> toTypeEntries = mydb.getTypesByPossibilityTo(1);
         ArrayAdapter<String> adapterToType = new ArrayAdapter<String>(NewRecord.this,
-                android.R.layout.simple_spinner_item, toTypeEntries);
+                android.R.layout.simple_spinner_dropdown_item, toTypeEntries);
         typeToSpinner.setAdapter(adapterToType);
 
         categoryFromSpinner = (Spinner) findViewById(R.id.category_from_spinner);
@@ -152,7 +152,7 @@ public class NewRecord extends AppCompatActivity implements View.OnClickListener
             int typeFromId = mydb.findTypeIdByName(typeFromString);
             List<String> fromCategoryEntries = mydb.getCategoriesByTypeId(typeFromId);
             ArrayAdapter<String> adapterFromCategory = new ArrayAdapter<String>(NewRecord.this,
-                    android.R.layout.simple_spinner_item, fromCategoryEntries);
+                    android.R.layout.simple_spinner_dropdown_item, fromCategoryEntries);
             categoryFromSpinner.setAdapter(adapterFromCategory);
         }
 
@@ -170,7 +170,7 @@ public class NewRecord extends AppCompatActivity implements View.OnClickListener
             int typeToId = mydb.findTypeIdByName(typeToString);
             List<String> toCategoryEntries = mydb.getCategoriesByTypeId(typeToId);
             ArrayAdapter<String> adapterToCategory = new ArrayAdapter<String>(NewRecord.this,
-                    android.R.layout.simple_spinner_item, toCategoryEntries);
+                    android.R.layout.simple_spinner_dropdown_item, toCategoryEntries);
             categoryToSpinner.setAdapter(adapterToCategory);
         }
 

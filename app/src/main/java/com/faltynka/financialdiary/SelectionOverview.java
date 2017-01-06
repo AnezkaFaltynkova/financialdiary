@@ -46,7 +46,7 @@ public class SelectionOverview extends AppCompatActivity {
         yearSpinner.setOnItemSelectedListener(new SelectionOverview.ItemSelectedYearListener());
         List<Integer> yearEntries = mydb.getAllDistinctYearsOfRecords();
         ArrayAdapter<Integer> adapterYear = new ArrayAdapter<Integer>(SelectionOverview.this,
-                android.R.layout.simple_spinner_item, yearEntries);
+                android.R.layout.simple_spinner_dropdown_item, yearEntries);
         yearSpinner.setAdapter(adapterYear);
 
         monthSpinner = (Spinner) findViewById(R.id.month_overview_spinner);
