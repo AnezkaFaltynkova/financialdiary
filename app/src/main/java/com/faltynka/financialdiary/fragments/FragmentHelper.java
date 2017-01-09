@@ -29,6 +29,9 @@ public class FragmentHelper {
         scrollView.addView(layoutInScrollView);
 
         for(SumInCategory sumInCategory : sumInCategoryList){
+            if (sumInCategory.getSum() == 0) {
+                continue;
+            }
             LinearLayout layoutWithTwoTextViews = new LinearLayout(context);
             layoutWithTwoTextViews.setOrientation(LinearLayout.HORIZONTAL);
             LinearLayout.LayoutParams LLParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);

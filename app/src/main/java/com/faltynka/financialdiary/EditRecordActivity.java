@@ -128,7 +128,7 @@ public class EditRecordActivity extends AppCompatActivity implements View.OnClic
                     editedRecord.setEdited(date.getTime());
                     editedRecord.setNote(noteEditText.getText().toString());
                     mydb.editRecord(editedRecord);
-                    Toast.makeText(EditRecordActivity.this, "Record was edited. date:"+ editedRecord.getDate()+" edited: " + editedRecord.getEdited(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(EditRecordActivity.this, "Record was edited", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(EditRecordActivity.this, Overview.class);
                     DateTime fromDate = new DateTime(year, month , day, 0, 0);
                     DateTime toDate = new DateTime(year, month, day, 0, 0);

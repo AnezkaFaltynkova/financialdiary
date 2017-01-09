@@ -84,7 +84,11 @@ public class Overview extends AppCompatActivity {
             btn.setBackgroundColor(Color.TRANSPARENT);
             String fromString = mydb.findCategoryNameById(record.getFromId());
             String toString = mydb.findCategoryNameById(record.getToId());
-            btn.setText("From: " + fromString.toUpperCase() + "\nTo: " + toString.toUpperCase());
+            String text = "From: " + fromString.toUpperCase() + "\nTo: " + toString.toUpperCase();
+            if (record.getNote() != null && !record.getNote().isEmpty()) {
+                text = text + "\nNote: " + record.getNote();
+            }
+            btn.setText(text);
             btn.setGravity(Gravity.LEFT);
             LinearLayout.LayoutParams btnParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
             btn.setLayoutParams(btnParams);
@@ -99,7 +103,6 @@ public class Overview extends AppCompatActivity {
                     intent.putExtra("day", day);
                     intent.putExtra("type", type);
                     startActivity(intent);
-                    finish();
                 }
             };
             btn1.setOnClickListener(onClickListener);

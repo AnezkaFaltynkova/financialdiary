@@ -114,7 +114,7 @@ public class NewRecord extends AppCompatActivity implements View.OnClickListener
                     record.setEdited(date.getTime());
                     record.setNote(noteEditText.getText().toString());
                     mydb.createRecord(record);
-                    Toast.makeText(NewRecord.this, "New record was created date:"+ record.getDate()+" edited: " + record.getEdited(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(NewRecord.this, "New record was created", Toast.LENGTH_LONG).show();
                     startActivity(new Intent(NewRecord.this, NewRecord.class));
                     finish();
                 }

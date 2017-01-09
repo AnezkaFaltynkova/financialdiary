@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.faltynka.financialdiary.sqlite.helper.DatabaseHelper;
@@ -34,6 +35,7 @@ public class MenuActivity extends AppCompatActivity {
     private DatabaseHelper mydb;
     private DatabaseReference mDatabase;
     private String mUserId;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,8 @@ public class MenuActivity extends AppCompatActivity {
         btnOverview = (Button) findViewById(R.id.overview_button);
         btnReports = (Button) findViewById(R.id.reports_button);
         btnSynchronize = (Button) findViewById(R.id.synchronize_button);
+
+        progressBar = (ProgressBar) findViewById(R.id.synchronizeProgressBar);
 
         // this listener will be called when there is change in firebase user session
         authListener = new FirebaseAuth.AuthStateListener() {
@@ -103,6 +107,7 @@ public class MenuActivity extends AppCompatActivity {
         btnSynchronize.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressBar.setVisibility(View.VISIBLE);
                 synchronizeAllData(false);
             }
         });
@@ -139,6 +144,8 @@ public class MenuActivity extends AppCompatActivity {
                 if (logout) {
                     mydb.deleteData();
                     auth.signOut();
+                } else {
+                    progressBar.setVisibility(View.GONE);
                 }
             }
 
