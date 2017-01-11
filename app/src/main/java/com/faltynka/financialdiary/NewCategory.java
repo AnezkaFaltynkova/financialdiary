@@ -11,6 +11,9 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.faltynka.financialdiary.sqlite.helper.DatabaseHelper;
+import com.faltynka.financialdiary.sqlite.model.Category;
+
+import java.util.Date;
 
 public class NewCategory extends AppCompatActivity {
     private DatabaseHelper mydb;
@@ -47,7 +50,9 @@ public class NewCategory extends AppCompatActivity {
                     if (mydb.existCategory(name, typeId)) {
                         Toast.makeText(NewCategory.this, "This category already exists", Toast.LENGTH_LONG).show();
                     } else {
-                        mydb.createCategory(name, typeId);
+                        Date edited = new Date();
+                        Category category = new Category(name, typeId, edited.getTime(), 0);
+                        mydb.createCategory(category);
                         Toast.makeText(NewCategory.this,
                                 "New category was created",
                                 Toast.LENGTH_LONG).show();

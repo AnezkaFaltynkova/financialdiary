@@ -30,14 +30,18 @@
         <activity android:name=".ReportsActivity" />
         <activity android:name=".ForgotPasswordActivity" />
 
-        <receiver android:name="FinancialDiaryAppWidgetProvider" >
+        <receiver android:name=".FinancialDiaryAppWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
-            <meta-data android:name="android.appwidget.provider"
+
+            <meta-data
+                android:name="android.appwidget.provider"
                 android:resource="@xml/financial_diary_appwidget_info" />
         </receiver>
 
+        <activity android:name=".OverviewCategories" />
+        <activity android:name=".EditCategoryActivity"></activity>
     </application>
 
 </manifest>
