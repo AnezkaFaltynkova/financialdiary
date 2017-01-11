@@ -20,6 +20,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +31,7 @@ public class MenuActivity extends AppCompatActivity {
     private Button btnOverview;
     private Button btnReports;
     private Button btnSynchronize;
+    private Button btnOverviewCategories;
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener authListener;
     private DatabaseHelper mydb;
@@ -51,6 +53,7 @@ public class MenuActivity extends AppCompatActivity {
         btnOverview = (Button) findViewById(R.id.overview_button);
         btnReports = (Button) findViewById(R.id.reports_button);
         btnSynchronize = (Button) findViewById(R.id.synchronize_button);
+        btnOverviewCategories = (Button) findViewById(R.id.overview_categories_button);
 
         progressBar = (ProgressBar) findViewById(R.id.synchronizeProgressBar);
 
@@ -109,6 +112,24 @@ public class MenuActivity extends AppCompatActivity {
             public void onClick(View v) {
                 progressBar.setVisibility(View.VISIBLE);
                 synchronizeAllData(false);
+            }
+        });
+
+        btnOverviewCategories.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List<Category> asset = mydb.selectAllCategoriesNotDeletedWithType("Asset");
+                List<Category> income = mydb.selectAllCategoriesNotDeletedWithType("Income");
+                List<Category> expense = mydb.selectAllCategoriesNotDeletedWithType("Expense");
+                List<Category> liability = mydb.selectAllCategoriesNotDeletedWithType("Liability");
+                List<Category> other = mydb.selectAllCategoriesNotDeletedWithType("Other");
+                Intent intent = new Intent(MenuActivity.this, OverviewCategories.class);
+                intent.putExtra("asset", (Serializable) asset);
+                intent.putExtra("income", (Serializable) income);
+                intent.putExtra("expense", (Serializable) expense);
+                intent.putExtra("liability", (Serializable) liability);
+                intent.putExtra("other", (Serializable) other);
+                startActivity(intent);
             }
         });
     }
@@ -170,12 +191,20 @@ public class MenuActivity extends AppCompatActivity {
                     List<Category> categoriesInFirebase = new ArrayList<>();
                     for (DataSnapshot categorySnapshot : snapshot.getChildren()) {
                         Category category = categorySnapshot.getValue(Category.class);
+                        category.setFirebaseId(categorySnapshot.getKey());
                         categoriesInFirebase.add(category);
                     }
                     List<Category> categoriesInSQLite = mydb.selectAllCategories();
                     for (Category firebaseCategory : categoriesInFirebase) {
                         if (!categoriesInSQLite.contains(firebaseCategory)) {
                             mydb.createCategoryWithId(firebaseCategory);
+                        } else {
+                            Category categoryInSQL = categoriesInSQLite.get(categoriesInSQLite.indexOf(firebaseCategory));
+                            if (categoryInSQL.getEdited() < firebaseCategory.getEdited()) {
+                                mydb.editCategory(firebaseCategory);
+                            } else if (categoryInSQL.getEdited() > firebaseCategory.getEdited()) {
+                                mDatabase.child("users").child(mUserId).child("category").child(firebaseCategory.getFirebaseId()).setValue(categoryInSQL);
+                            }
                         }
                     }
                     for(Category sqliteCategory : categoriesInSQLite) {

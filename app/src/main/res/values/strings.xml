@@ -11,7 +11,7 @@
     <string name="auth_failed">Authentication failed.</string>
     <string name="new_record">New Record</string>
     <string name="new_category">New Category</string>
-    <string name="overview">Overview</string>
+    <string name="overview">Overview of Records</string>
     <string name="reports">Reports</string>
     <string name="synchronize">Synchronize</string>
     <string name="logout">Log Out</string>
@@ -43,6 +43,8 @@
     <string name="asset">Asset</string>
     <string name="expense">Expense</string>
     <string name="income">Income</string>
+    <string name="overview_categories">Overview of Categories</string>
+    <string name="save_category">Save Category</string>
 
 
     <string-array name="type_dropdown_arrays">

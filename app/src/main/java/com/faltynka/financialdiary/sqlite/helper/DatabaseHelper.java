@@ -80,7 +80,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("create table user (email text, password text, uid text)");
         db.execSQL("create table type (id integer primary key, name text, from_possible integer, to_possible integer)");
-        db.execSQL("create table category (id integer primary key, firebase_id text, name text, type_id integer, foreign key (type_id) references type(id))");
+        db.execSQL("create table category (id integer primary key, firebase_id text, name text, type_id integer, edited integer, deleted integer, foreign key (type_id) references type(id))");
         db.execSQL("create table record (id integer primary key, firebase_id text, from_id integer, to_id integer, amount integer, date integer, note text, edited integer, deleted integer, " +
                 " foreign key (to_id) references category(id), foreign key (from_id) references category(id))");
         insertAllTypes(db);
@@ -113,7 +113,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public int findTypeIdByName(String name){
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor result =  db.rawQuery( "select * from type where name='"+name+"'", null);
+        Cursor result =  db.rawQuery("select * from type where name='"+name+"'", null);
         if (result != null)
             result.moveToFirst();
         int typeId = result.getInt(result.getColumnIndex(KEY_ID));
@@ -144,12 +144,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void createCategory(String name, int typeId){
+    public void createCategory(Category category){
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_NAME, name);
-        values.put(KEY_TYPE_ID, typeId);
+        values.put(KEY_NAME, category.getName());
+        values.put(KEY_TYPE_ID, category.getType());
+        values.put(KEY_EDITED, category.getEdited());
+        values.put(KEY_DELETED, category.getDeleted());
 
         db.insert(TABLE_CATEGORY, null, values);
         db.close();
@@ -162,8 +164,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_ID, category.getId());
         values.put(KEY_NAME, category.getName());
         values.put(KEY_TYPE_ID, category.getType());
+        values.put(KEY_EDITED, category.getEdited());
+        values.put(KEY_DELETED, category.getDeleted());
 
         db.insert(TABLE_CATEGORY, null, values);
+        db.close();
+    }
+
+    public void editCategory(Category category) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_NAME, category.getName());
+        values.put(KEY_TYPE_ID, category.getType());
+        values.put(KEY_EDITED, category.getEdited());
+        values.put(KEY_DELETED, category.getDeleted());
+
+        db.update(TABLE_CATEGORY, values, "id=" + category.getId(), null);
         db.close();
     }
 
@@ -194,11 +211,46 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             category.setFirebaseId(result.getString(result.getColumnIndex(KEY_FIREBASE_ID)));
             category.setName(result.getString(result.getColumnIndex(KEY_NAME)));
             category.setType(result.getInt(result.getColumnIndex(KEY_TYPE_ID)));
+            category.setEdited(result.getInt(result.getColumnIndex(KEY_EDITED)));
+            category.setDeleted(result.getInt(result.getColumnIndex(KEY_DELETED)));
             categories.add(category);
             result.moveToNext();
         }
         result.close();
         return categories;
+    }
+
+    public List<Category> selectAllCategoriesNotDeletedWithType(String typeName){
+        SQLiteDatabase db = this.getReadableDatabase();
+        int typeId = findTypeIdByName(typeName);
+        Cursor result = db.rawQuery("select * from category where type_id=" + typeId + " and deleted=0", null);
+        if (result == null) {
+            result.close();
+            return new ArrayList<>();
+        }
+        result.moveToFirst();
+        List<Category> categories = new ArrayList<>();
+        while(!result.isAfterLast()){
+            Category category = new Category();
+            category.setId(result.getInt(result.getColumnIndex(KEY_ID)));
+            category.setFirebaseId(result.getString(result.getColumnIndex(KEY_FIREBASE_ID)));
+            category.setName(result.getString(result.getColumnIndex(KEY_NAME)));
+            category.setType(result.getInt(result.getColumnIndex(KEY_TYPE_ID)));
+            category.setEdited(result.getInt(result.getColumnIndex(KEY_EDITED)));
+            category.setDeleted(result.getInt(result.getColumnIndex(KEY_DELETED)));
+            categories.add(category);
+            result.moveToNext();
+        }
+        result.close();
+        return categories;
+    }
+
+    public void deleteCategory(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Date edited = new Date();
+        String sql = "update category set deleted = 1, edited = " + edited.getTime() +" where id =" + id;
+        db.execSQL(sql);
+        db.close();
     }
 
     public List<String> getTypesByPossibilityFrom(int fromPossible){
@@ -389,8 +441,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void deleteRecord(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        String sql = "update record set deleted = 1 where id =" + id;
+        Date edited = new Date();
+        String sql = "update record set deleted = 1, edited = " + edited.getTime() +" where id =" + id;
         db.execSQL(sql);
+        db.close();
+    }
+
+    public void deleteAllRecordsForCategoryId(int categoryId){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Date edited = new Date();
+        Cursor result = db.rawQuery("select * from record where (from_id =" + categoryId + " or to_id =" + categoryId +") and deleted = 0", null);
+        if (result == null) {
+            result.close();
+            db.close();
+            return;
+        }
+        result.moveToFirst();
+        while(!result.isAfterLast()){
+            int recordId = result.getInt(result.getColumnIndex(KEY_ID));
+            String sql = "update record set deleted = 1, edited = " + edited.getTime() +" where id =" + recordId;
+            db.execSQL(sql);
+            result.moveToNext();
+        }
+        result.close();
         db.close();
     }
 

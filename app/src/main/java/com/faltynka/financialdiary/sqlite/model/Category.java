@@ -1,19 +1,23 @@
 package com.faltynka.financialdiary.sqlite.model;
 
-public class Category {
+import java.io.Serializable;
+
+public class Category implements Serializable{
     private int id;
     private String firebaseId;
     private String name;
     private int type;
+    private long edited;
+    private int deleted;
 
     public Category() {
     }
 
-    public Category(String firebaseId, int id, String name, int type) {
-        this.firebaseId = firebaseId;
-        this.id = id;
+    public Category(String name, int type, long edited, int deleted) {
         this.name = name;
         this.type = type;
+        this.edited = edited;
+        this.deleted = deleted;
     }
 
     public int getId() {
@@ -46,6 +50,22 @@ public class Category {
 
     public void setFirebaseId(String firebaseId) {
         this.firebaseId = firebaseId;
+    }
+
+    public long getEdited() {
+        return edited;
+    }
+
+    public void setEdited(long edited) {
+        this.edited = edited;
+    }
+
+    public int getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(int deleted) {
+        this.deleted = deleted;
     }
 
     @Override
