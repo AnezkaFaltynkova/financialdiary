@@ -32,7 +32,7 @@
             android:visibility="gone"
             android:background="?attr/colorPrimary"
             android:textColor="?attr/colorAccent"
-            android:gravity="center|left"/>
+            android:gravity="center|start"/>
 
         <Button
             android:text="@string/right_arrow"

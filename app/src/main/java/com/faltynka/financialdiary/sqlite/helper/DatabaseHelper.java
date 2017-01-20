@@ -11,7 +11,6 @@ import com.faltynka.financialdiary.sqlite.model.Category;
 import com.faltynka.financialdiary.sqlite.model.Record;
 
 import org.joda.time.DateTime;
-import org.joda.time.LocalDateTime;
 
 import java.util.ArrayList;
 import java.util.Date;
