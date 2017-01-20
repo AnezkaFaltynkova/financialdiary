@@ -17,29 +17,29 @@
             android:text="@string/left_arrow"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
+            android:background="?attr/colorPrimary"
+            android:textColor="?attr/colorAccent"
             android:id="@+id/left_arrow_overview_button"
             android:layout_weight="1"/>
 
         <TextView
             android:textSize="20sp"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:id="@+id/dateOverviewTextView"
-            android:layout_weight="0.5"/>
+            android:layout_weight="0.5"
+            android:background="?attr/colorPrimary"
+            android:textColor="?attr/colorAccent"
+            android:gravity="center|start" />
 
         <Button
             android:text="@string/right_arrow"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
+            android:background="?attr/colorPrimary"
+            android:textColor="?attr/colorAccent"
             android:id="@+id/right_arrow_overview_button"
             android:layout_weight="1"/>
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray" />
 
 </LinearLayout>
