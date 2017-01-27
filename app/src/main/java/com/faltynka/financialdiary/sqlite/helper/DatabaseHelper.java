@@ -282,7 +282,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public List<String> getCategoriesByTypeId(int typeId){
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor result = db.rawQuery("select * from category where type_id=" + typeId + "", null);
+        Cursor result = db.rawQuery("select * from category where type_id=" + typeId + " and deleted = 0", null);
         result.moveToFirst();
         List<String> items = new ArrayList<>(
         );
